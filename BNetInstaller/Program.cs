@@ -26,7 +26,7 @@ namespace BNetInstaller
         {
             using (var app = new AgentApp())
             {
-                options.Santise();
+                options.Sanitise();
                 string locale = options.Locale.ToString();
 
                 Console.WriteLine("Authenticating");
@@ -34,7 +34,7 @@ namespace BNetInstaller
 
                 Console.WriteLine("Queuing install");
                 app.InstallEndpoint.Model.InstructionsDataset = new[] { "torrent", "win", options.Product, locale.ToLowerInvariant() };
-                app.InstallEndpoint.Model.InstructionsPatchUrl = $"http://eu.patch.battle.net:1119/{options.Product}";
+                app.InstallEndpoint.Model.InstructionsPatchUrl = $"http://us.patch.battle.net:1119/{options.Product}";
                 app.InstallEndpoint.Model.Uid = options.UID;
                 await app.InstallEndpoint.Post();
 

@@ -19,7 +19,7 @@ namespace BNetInstaller
         [Option("uid", HelpText = "Agent Product UID (Required if different to the TACT product)")]
         public string UID { get; set; }
 
-        public void Santise()
+        public void Sanitise()
         {
             // ensure a UID exists
             if (string.IsNullOrWhiteSpace(UID))
