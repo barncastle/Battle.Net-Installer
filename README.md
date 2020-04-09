@@ -1,9 +1,9 @@
 # BNet Installer
 
-A command line tool for installing games via Blizzard's Battle.Net application. Windows only.
+A command line tool for installing games via Blizzard's Battle.Net application. Windows only. See releases for a compiled binary.
 
-#### Prerequisites
-- .Net Core 2.2
+#### Project Prerequisites
+- .Net Core 3.1
 
 #### Arguments
 
@@ -21,6 +21,6 @@ Languages are listed [here](BNetInstaller/Constants/Locale.cs), availability wil
 #### Usage
 
 Example for StarCraft 2:  
-TACT Product = `s2`, Agent UID = `s2(_locale)`
+TACT Product = `s2`, Agent UID = `s2(_locale)
 
-`dotnet bnetinstaller.dll --prod s2 --uid s2_enus --lang enus --dir "C:\Test"`
+`bnetinstaller.exe --prod s2 --uid s2_enus --lang enus --dir "C:\Test"`
