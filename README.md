@@ -21,6 +21,6 @@ Languages are listed [here](BNetInstaller/Constants/Locale.cs), availability wil
 #### Usage
 
 Example for StarCraft 2:  
-TACT Product = `s2`, Agent UID = `s2(_locale)
+TACT Product = `s2`, Agent UID = `s2(_locale)`
 
 `bnetinstaller.exe --prod s2 --uid s2_enus --lang enus --dir "C:\Test"`
