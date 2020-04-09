@@ -1,4 +1,4 @@
-# BNet Installer
+# Battle.Net Installer
 
 A command line tool for installing games via Blizzard's Battle.Net application. Windows only. See releases for a compiled binary.
 
