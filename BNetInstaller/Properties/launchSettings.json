@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "BNetInstaller": {
-      "commandName": "Project",
-      "commandLineArgs": "--prod s2 --uid s2_enus --lang enus --dir \"C:\\Test\""
-    }
-  }
-}
