@@ -5,7 +5,7 @@ using CommandLine;
 
 namespace BNetInstaller
 {
-    class Options
+    internal class Options
     {
         [Option("prod", Required = true, HelpText = "TACT Product")]
         public string Product { get; set; }

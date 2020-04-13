@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace BNetInstaller.Endpoints
 {
-    abstract class BaseEndpoint
+    internal abstract class BaseEndpoint
     {
         public string Endpoint { get; }
 

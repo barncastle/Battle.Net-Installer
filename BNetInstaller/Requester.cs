@@ -7,7 +7,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace BNetInstaller
 {
-    class Requester : IDisposable
+    internal class Requester : IDisposable
     {
         public string BaseAddress { get; }
 

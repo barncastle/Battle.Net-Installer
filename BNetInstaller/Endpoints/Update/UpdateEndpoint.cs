@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace BNetInstaller.Endpoints.Update
 {
-    class UpdateEndpoint : BaseEndpoint
+    internal class UpdateEndpoint : BaseEndpoint
     {
         public ProductPriorityModel Model { get; }
         public ProductEndpoint Product { get; private set; }
@@ -18,18 +18,16 @@ namespace BNetInstaller.Endpoints.Update
 
         public async Task<JToken> Get()
         {
-            using (var response = await Requester.SendAsync(Endpoint, HttpVerb.GET))
-                return await Deserialize(response);
+            using var response = await Requester.SendAsync(Endpoint, HttpVerb.GET);
+            return await Deserialize(response);
         }
 
         public async Task<JToken> Post()
         {
-            using (var response = await Requester.SendAsync(Endpoint, HttpVerb.POST, Model))
-            {
-                var content = await Deserialize(response);
-                Product = ProductEndpoint.CreateFromResponse(content, Requester);
-                return content;
-            }
+            using var response = await Requester.SendAsync(Endpoint, HttpVerb.POST, Model);
+            var content = await Deserialize(response);
+            Product = ProductEndpoint.CreateFromResponse(content, Requester);
+            return content;
         }
     }
 }

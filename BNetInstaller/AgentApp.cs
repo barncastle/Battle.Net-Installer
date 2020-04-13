@@ -9,7 +9,7 @@ using BNetInstaller.Endpoints.Version;
 
 namespace BNetInstaller
 {
-    class AgentApp : IDisposable
+    internal class AgentApp : IDisposable
     {
         public readonly AgentEndpoint AgentEndpoint;
         public readonly InstallEndpoint InstallEndpoint;

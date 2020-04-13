@@ -1,6 +1,6 @@
 ﻿namespace BNetInstaller.Constants
 {
-    enum Locale
+    internal enum Locale
     {
         deDE,
         enUS,

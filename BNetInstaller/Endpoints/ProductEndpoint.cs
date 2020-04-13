@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace BNetInstaller.Endpoints
 {
-    class ProductEndpoint : BaseEndpoint
+    internal class ProductEndpoint : BaseEndpoint
     {
         public ProductModel Model { get; private set; }
 
@@ -16,14 +16,14 @@ namespace BNetInstaller.Endpoints
 
         public async Task<JToken> Get()
         {
-            using (var response = await Requester.SendAsync(Endpoint, HttpVerb.GET))
-                return await Deserialize(response);
+            using var response = await Requester.SendAsync(Endpoint, HttpVerb.GET);
+            return await Deserialize(response);
         }
 
         public async Task<JToken> Post()
         {
-            using (var response = await Requester.SendAsync(Endpoint, HttpVerb.POST, Model))
-                return await Deserialize(response);
+            using var response = await Requester.SendAsync(Endpoint, HttpVerb.POST, Model);
+            return await Deserialize(response);
         }
 
         public static ProductEndpoint CreateFromResponse(JToken content, Requester requester)
@@ -37,7 +37,7 @@ namespace BNetInstaller.Endpoints
             else
             {
                 return null;
-            }                
+            }
         }
     }
 }
