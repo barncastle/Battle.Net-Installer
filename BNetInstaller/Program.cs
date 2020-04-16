@@ -72,9 +72,6 @@ namespace BNetInstaller
 
                 // get progress percentage
                 var progress = stats.Value<float?>("progress");
-                if (progress == 1f)
-                    break;
-
                 if (progress.HasValue)
                 {
                     Console.SetCursorPosition(cursorLeft, cursorTop);
@@ -83,6 +80,10 @@ namespace BNetInstaller
                     Print("Directory:", options.Directory);
                     Print("Progress:", progress.Value.ToString("P4"));
                     await Task.Delay(2000);
+
+                    // exit @ 100%
+                    if (progress == 1f)
+                        break;
                 }
                 else if (!updating)
                 {
