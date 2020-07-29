@@ -19,6 +19,9 @@ namespace BNetInstaller
         [Option("uid", HelpText = "Agent Product UID (Required if different to the TACT product)")]
         public string UID { get; set; }
 
+        [Option("repair", HelpText = "Run installation repair")]
+        public bool Repair { get; set; }
+
         public void Sanitise()
         {
             // ensure a UID exists

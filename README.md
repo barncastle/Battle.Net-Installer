@@ -13,6 +13,7 @@ A command line tool for installing games via Blizzard's Battle.Net application. 
 | --lang | Game/Asset language **(Required)** |
 | --dir | Installation Directory **(Required)** |
 | --uid | Agent UID (Required if different to the TACT product) |
+| --repair | Repairs the installation opposed to installing/updating it |
 | --help | Shows this table |
 
 All products and Agent UIDs can be found [here](https://wowdev.wiki/TACT#Products) however only (green) Active products will work.  

@@ -4,6 +4,7 @@ using System.IO;
 using BNetInstaller.Endpoints.Agent;
 using BNetInstaller.Endpoints.Game;
 using BNetInstaller.Endpoints.Install;
+using BNetInstaller.Endpoints.Repair;
 using BNetInstaller.Endpoints.Update;
 using BNetInstaller.Endpoints.Version;
 
@@ -14,6 +15,7 @@ namespace BNetInstaller
         public readonly AgentEndpoint AgentEndpoint;
         public readonly InstallEndpoint InstallEndpoint;
         public readonly UpdateEndpoint UpdateEndpoint;
+        public readonly RepairEndpoint RepairEndpoint;
         public readonly GameEndpoint GameEndpoint;
         public readonly VersionEndpoint VersionEndpoint;
 
@@ -32,6 +34,7 @@ namespace BNetInstaller
             AgentEndpoint = new AgentEndpoint(Requester);
             InstallEndpoint = new InstallEndpoint(Requester);
             UpdateEndpoint = new UpdateEndpoint(Requester);
+            RepairEndpoint = new RepairEndpoint(Requester);
             GameEndpoint = new GameEndpoint(Requester);
             VersionEndpoint = new VersionEndpoint(Requester);
         }

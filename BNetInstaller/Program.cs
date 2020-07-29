@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using BNetInstaller.Constants;
+using BNetInstaller.Endpoints;
 using CommandLine;
 
 namespace BNetInstaller
@@ -23,43 +25,84 @@ namespace BNetInstaller
         {
             using var app = new AgentApp();
             options.Sanitise();
-            string locale = options.Locale.ToString();
+
+            var locale = options.Locale.ToString();
+            var mode = options.Repair ? Mode.Repair : Mode.Install;
 
             Console.WriteLine("Authenticating");
             await app.AgentEndpoint.Get();
 
-            Console.WriteLine("Queuing install");
+            Console.WriteLine($"Queuing {mode}");
             app.InstallEndpoint.Model.InstructionsDataset = new[] { "torrent", "win", options.Product, locale.ToLowerInvariant() };
             app.InstallEndpoint.Model.InstructionsPatchUrl = $"http://us.patch.battle.net:1119/{options.Product}";
             app.InstallEndpoint.Model.Uid = options.UID;
             await app.InstallEndpoint.Post();
 
-            Console.WriteLine("Starting install");
+            Console.WriteLine($"Starting {mode}");
             app.InstallEndpoint.Product.Model.GameDir = options.Directory;
             app.InstallEndpoint.Product.Model.Language[0] = locale;
             app.InstallEndpoint.Product.Model.SelectedAssetLocale = locale;
             app.InstallEndpoint.Product.Model.SelectedLocale = locale;
             await app.InstallEndpoint.Product.Post();
 
-            app.UpdateEndpoint.Model.Uid = options.UID;
-            await app.UpdateEndpoint.Post();
-
-            // process the install
             Console.WriteLine();
-            await ProgressLoop(options, app);
+
+            var operation = mode switch
+            {
+                Mode.Install => InstallProduct(options, app),
+                Mode.Repair => RepairProduct(options, app),
+                _ => throw new NotImplementedException(),
+            };
+
+            // process the task
+            await operation;
 
             // send close signal
             await app.AgentEndpoint.Delete();
         }
 
-        private static async Task ProgressLoop(Options options, AgentApp app)
+        private static async Task InstallProduct(Options options, AgentApp app)
+        {
+            // initiate download
+            app.UpdateEndpoint.Model.Uid = options.UID;
+            await app.UpdateEndpoint.Post();
+
+            // first try install endpoint
+            if (await ProgressLoop(options, app.InstallEndpoint.Product))
+                return;
+
+            // then try the update endpoint instead
+            if (await ProgressLoop(options, app.UpdateEndpoint.Product))
+                return;
+
+            // failing that another agent or the BNet app has probably taken control of the install
+            Console.WriteLine("Another application has taken over. Launch the Battle.Net app to resume installation.");
+        }
+
+        private static async Task RepairProduct(Options options, AgentApp app)
+        {
+            // initiate repair
+            app.RepairEndpoint.Model.Uid = options.UID;
+            await app.RepairEndpoint.Post();
+
+            // run the repair endpoint
+            if (await ProgressLoop(options, app.RepairEndpoint.Product))
+                return;
+
+            Console.WriteLine("Unable to repair this product.");
+        }
+
+        private static async Task<bool> ProgressLoop(Options options, ProductEndpoint endpoint)
         {
             var locale = options.Locale.ToString();
             var cursorLeft = Console.CursorLeft;
             var cursorTop = Console.CursorTop;
 
-            var endpoint = app.InstallEndpoint.Product;
-            var updating = false;
+            static void Print(string label, string value)
+            {
+                Console.Write(label.PadRight(20, ' '));
+                Console.WriteLine(value);
+            }
 
             while (true)
             {
@@ -68,7 +111,7 @@ namespace BNetInstaller
                 // check for completion
                 var complete = stats.Value<bool?>("download_complete");
                 if (complete == true)
-                    break;
+                    return true;
 
                 // get progress percentage
                 var progress = stats.Value<float?>("progress");
@@ -83,27 +126,13 @@ namespace BNetInstaller
 
                     // exit @ 100%
                     if (progress == 1f)
-                        break;
-                }
-                else if (!updating)
-                {
-                    // try the update endpoint instead
-                    endpoint = app.UpdateEndpoint.Product;
-                    updating = true;
+                        return true;
                 }
                 else
                 {
-                    // another agent or the BNet app has taken control of this install
-                    Console.WriteLine("Another application has taken over. Launch the Battle.Net app to resume installation.");
-                    break;
+                    return false;
                 }
             }
-        }
-
-        private static void Print(string label, string value)
-        {
-            Console.Write(label.PadRight(20, ' '));
-            Console.WriteLine(value);
         }
     }
 }
