@@ -8,7 +8,7 @@ namespace BNetInstaller
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
             using var parser = new Parser(s =>
             {
@@ -17,8 +17,9 @@ namespace BNetInstaller
                 s.AutoVersion = false;
             });
 
-            var options = parser.ParseArguments<Options>(args);
-            options.MapResult(async o => await Run(o), e => Task.FromResult(0)).Wait();
+            await parser
+                .ParseArguments<Options>(args)
+                .MapResult(Run, Task.FromResult);
         }
 
         private static async Task Run(Options options)
