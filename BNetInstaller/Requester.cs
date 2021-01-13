@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BNetInstaller.Constants;
@@ -61,12 +62,10 @@ namespace BNetInstaller
 
         private async Task HandleRequestFailure(HttpResponseMessage response)
         {
-            using (response)
-            {
-                var statusCode = response.StatusCode;
-                var content = await response.Content.ReadAsStringAsync();
-                throw new Exception($"{(int)statusCode} {statusCode}: {content}");
-            }
+            var uri = response.RequestMessage.RequestUri.AbsolutePath;
+            var statusCode = response.StatusCode;
+            var content = await response.Content.ReadAsStringAsync();
+            Debug.WriteLine($"{(int)statusCode} {statusCode}: {uri} {content}");
         }
 
         public void Dispose()
