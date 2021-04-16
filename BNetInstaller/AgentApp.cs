@@ -41,14 +41,22 @@ namespace BNetInstaller
 
         private void StartProcess()
         {
-            Process = Process.Start(AgentPath, $"--port={Port}");
-            Requester = new Requester(Port);
+            if (File.Exists(AgentPath))
+            {
+                Process = Process.Start(AgentPath, $"--port={Port}");
+                Requester = new Requester(Port);
+            }
+            else
+            {
+                Console.WriteLine("Unable to find Agent.exe. Please install Battle.net before running.");
+                Environment.Exit(0);
+            }
         }
 
         public void Dispose()
         {
-            if (!Process.HasExited)
-                Process?.Kill();
+            if (Process?.HasExited == false)
+                Process.Kill();
 
             Requester?.Dispose();
             Process?.Dispose();
