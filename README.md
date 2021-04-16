@@ -22,9 +22,15 @@ Languages are listed [here](BNetInstaller/Constants/Locale.cs), availability wil
 
 #### Usage
 
-Example for StarCraft 2:  
-TACT Product = `s2`, Agent UID = `s2(_locale)`
+You will need to run this from either command line or PowerShell. To do this:
 
-`bnetinstaller.exe --prod s2 --uid s2_enus --lang enus --dir "C:\Test"`
+1. Navigate to the folder that `bnetinstaller.exe` is located.
+2. Hold shift and right click on the folder.
+3. Click "Open PowerShell window here" or "Open command window here".
+4. Enter `.\bnetinstaller.exe` followed by the above arguments.
+
+For example for StarCraft 2, which has a TACT Product of `s2` and an Agent UID of `s2(_locale)`):  
+
+`.\bnetinstaller.exe --prod s2 --uid s2_enus --lang enus --dir "C:\Test"`
 
 **Note:** *If run against an existing installation the installer will attempt to update the product.*
