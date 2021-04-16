@@ -29,7 +29,7 @@ You will need to run this from either command line or PowerShell. To do this:
 3. Click "Open PowerShell window here" or "Open command window here".
 4. Enter `.\bnetinstaller.exe` followed by the above arguments.
 
-For example for StarCraft 2, which has a TACT Product of `s2` and an Agent UID of `s2(_locale)`):  
+For example for StarCraft 2, which has a TACT Product of `s2` and an Agent UID of `s2(_locale)`:  
 
 `.\bnetinstaller.exe --prod s2 --uid s2_enus --lang enus --dir "C:\Test"`
 
