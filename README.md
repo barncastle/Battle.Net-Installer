@@ -39,7 +39,7 @@ For example for StarCraft 2, which has a TACT Product of `s2` and an Agent UID o
 
 #### Error Messages and Codes
 
-Since this tool interacts directly with the Battle.net agent which has no human-readable errors just error codes. This tool does it's best to indicate the potential problem and displays the full exception when it occurs. Additional details can be found in the agent log files which are located within the `%programdata%\Battle.net\Agent\Agent.xxxx` directories.
+Since this tool interacts directly with the Battle.net agent there are no human-readable errors just error codes. This tool does it's best to indicate the potential problem and displays the full exception when it occurs. Additional details can be found in the agent log files which are located within the `%programdata%\Battle.net\Agent\Agent.xxxx` directories.
 
  Some known and common errors can be found below:
 
