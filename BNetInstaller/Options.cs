@@ -63,6 +63,8 @@ namespace BNetInstaller
             Console.Write("Repair Install (Y/N): ");
             args[8] = GetInput().ToUpper() == "Y" ? "--repair" : "";
 
+            Console.WriteLine();
+
             return args;
         }
     }
