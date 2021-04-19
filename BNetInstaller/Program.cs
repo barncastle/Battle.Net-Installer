@@ -10,6 +10,9 @@ namespace BNetInstaller
     {
         private static async Task Main(string[] args)
         {
+            if (args == null || args.Length == 0)
+                args = Options.Generate();
+
             using var parser = new Parser(s =>
             {
                 s.HelpWriter = Console.Error;
