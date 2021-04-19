@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using BNetInstaller.Endpoints.Agent;
@@ -29,7 +30,11 @@ namespace BNetInstaller
         {
             AgentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Battle.net", "Agent", "Agent.exe");
 
-            StartProcess();
+            if (!StartProcess())
+            {
+                Console.WriteLine("Please ensure Battle.net is installed and has recently been opened.");
+                Environment.Exit(0);
+            }
 
             AgentEndpoint = new AgentEndpoint(Requester);
             InstallEndpoint = new InstallEndpoint(Requester);
@@ -39,18 +44,27 @@ namespace BNetInstaller
             VersionEndpoint = new VersionEndpoint(Requester);
         }
 
-        private void StartProcess()
+        private bool StartProcess()
         {
             if (File.Exists(AgentPath))
             {
-                Process = Process.Start(AgentPath, $"--port={Port}");
-                Requester = new Requester(Port);
+                try
+                {
+                    Process = Process.Start(AgentPath, $"--port={Port}");
+                    Requester = new Requester(Port);
+                    return true;
+                }
+                catch (Win32Exception)
+                {
+                    Console.WriteLine("Unable to start Agent.exe.");
+                }
             }
             else
             {
-                Console.WriteLine("Unable to find Agent.exe. Please install Battle.net before running.");
-                Environment.Exit(0);
+                Console.WriteLine("Unable to find Agent.exe.");
             }
+
+            return false;
         }
 
         public void Dispose()
