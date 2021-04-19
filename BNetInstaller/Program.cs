@@ -102,10 +102,10 @@ namespace BNetInstaller
             var cursorLeft = Console.CursorLeft;
             var cursorTop = Console.CursorTop;
 
-            static void Print(string label, string value)
+            static void Print(string label, object value)
             {
                 Console.Write(label.PadRight(20, ' '));
-                Console.WriteLine(value);
+                Console.WriteLine(value.ToString().PadRight(20, ' '));
             }
 
             while (true)
@@ -117,8 +117,10 @@ namespace BNetInstaller
                 if (complete == true)
                     return true;
 
-                // get progress percentage
+                // get progress percentage and playability
                 var progress = stats.Value<float?>("progress");
+                var playable = stats.Value<bool?>("playable");
+
                 if (progress.HasValue)
                 {
                     Console.SetCursorPosition(cursorLeft, cursorTop);
@@ -126,6 +128,7 @@ namespace BNetInstaller
                     Print("Language:", locale);
                     Print("Directory:", options.Directory);
                     Print("Progress:", progress.Value.ToString("P4"));
+                    Print("Playable:", playable.GetValueOrDefault());
                     await Task.Delay(2000);
 
                     // exit @ 100%
