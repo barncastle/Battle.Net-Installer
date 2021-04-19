@@ -21,12 +21,15 @@ namespace BNetInstaller.Endpoints
         {
             var content = await response.Content.ReadAsStringAsync();
             var result = JToken.Parse(content);
+            ValidateResponse(result, content);
+            return result;
+        }
 
-            var errorCode = result.Value<float?>("error");
+        protected virtual void ValidateResponse(JToken response, string content)
+        {
+            var errorCode = response.Value<float?>("error");
             if (errorCode.HasValue && errorCode.Value > 0)
                 throw new Exception($"Agent Error: {errorCode}", new Exception(content));
-
-            return result;
         }
     }
 }

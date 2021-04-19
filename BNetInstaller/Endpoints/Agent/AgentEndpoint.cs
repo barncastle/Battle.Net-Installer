@@ -19,14 +19,23 @@ namespace BNetInstaller.Endpoints.Agent
         public async Task<JToken> Get()
         {
             using var response = await Requester.SendAsync(Endpoint, HttpVerb.GET);
-            var content = await Deserialize(response);
+            return await Deserialize(response);
+        }
 
-            var token = content.Value<string>("authorization");
+        protected override void ValidateResponse(JToken response, string content)
+        {
+            var token = response.Value<string>("authorization");
+
             if (string.IsNullOrEmpty(token))
-                throw new Exception("Unable to authorise");
+            {
+                throw new Exception($"Agent Error: Unable to authenticate.", new Exception(content));
+            }
+            else
+            {
+                Requester.SetAuthorization(token);
+            }
 
-            Requester.SetAuthorization(token);
-            return content;
+            base.ValidateResponse(response, content);
         }
     }
 }
