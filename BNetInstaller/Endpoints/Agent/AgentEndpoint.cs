@@ -27,14 +27,9 @@ namespace BNetInstaller.Endpoints.Agent
             var token = response.Value<string>("authorization");
 
             if (string.IsNullOrEmpty(token))
-            {
                 throw new Exception($"Agent Error: Unable to authenticate.", new Exception(content));
-            }
-            else
-            {
-                Requester.SetAuthorization(token);
-            }
 
+            Requester.SetAuthorization(token);
             base.ValidateResponse(response, content);
         }
     }

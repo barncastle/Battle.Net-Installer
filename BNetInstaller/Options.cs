@@ -27,6 +27,7 @@ namespace BNetInstaller
             // ensure a UID exists
             if (string.IsNullOrWhiteSpace(UID))
                 UID = Product;
+
             // remove _locale suffix for wiki copy-pasters
             if (UID.Contains("_locale", StringComparison.OrdinalIgnoreCase))
                 UID = Regex.Replace(UID, "\\(?_locale\\)?", $"_{Locale}", RegexOptions.IgnoreCase);
@@ -38,33 +39,33 @@ namespace BNetInstaller
 
         public static string[] Generate()
         {
-            var args = new string[9];
+            static string GetInput(string message)
+            {
+                Console.Write(message);
+                return Console.ReadLine().Trim().Trim('"');
+            }
 
             Console.WriteLine("Please complete the following information:");
 
-            static string GetInput() => Console.ReadLine().Trim().Trim('"');
-
-            Console.Write("TACT Product: ");
-            args[0] = "--prod";
-            args[1] = GetInput();
-
-            Console.Write("Agent UID: ");
-            args[2] = "--uid";
-            args[3] = GetInput();
-
-            Console.Write("Installation Directory: ");
-            args[4] = "--dir";
-            args[5] = GetInput();
-
-            Console.Write("Game/Asset Language: ");
-            args[6] = "--lang";
-            args[7] = GetInput();
-
-            Console.Write("Repair Install (Y/N): ");
-            args[8] = GetInput().ToUpper() == "Y" ? "--repair" : "";
+            var args = new string[9]
+            {
+                "--prod",
+                GetInput("TACT Product: "),
+                "--uid",
+                GetInput("Agent UID: "),
+                "--dir",
+                GetInput("Installation Directory: "),
+                "--lang",
+                GetInput("Game/Asset Language: "),
+                GetInput("Repair Install (Y/N): ").ToUpper()
+            };
 
             Console.WriteLine();
 
+            // fix repair arg
+            if (args[8] != "" && args[8][0] == 'Y')
+                args[8] = "--repair";
+            
             return args;
         }
     }
