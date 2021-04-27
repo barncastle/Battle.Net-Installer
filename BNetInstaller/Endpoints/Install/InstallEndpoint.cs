@@ -26,15 +26,22 @@ namespace BNetInstaller.Endpoints.Install
 
         protected override void ValidateResponse(JToken response, string content)
         {
-            foreach (var section in SubSections)
+            var agentError = response.Value<float?>("error");
+            
+            if(agentError.HasValue && agentError.Value > 0)
             {
-                var token = response["form"]?[section];
-                var errorCode = token?.Value<float?>("error");
-                if (errorCode.HasValue && errorCode.Value > 0)
-                    throw new Exception($"Agent Error: Unable to install - {errorCode} ({section}).", new Exception(content));
-            }
+                // try to identify the erroneous section
+                foreach (var section in SubSections)
+                {
+                    var token = response["form"]?[section];
+                    var errorCode = token?.Value<float?>("error");
+                    if (errorCode.HasValue && errorCode.Value > 0)
+                        throw new Exception($"Agent Error: Unable to install - {errorCode} ({section}).", new Exception(content));
+                }
 
-            base.ValidateResponse(response, content);
+                // fallback to throwing a global error
+                throw new Exception($"Agent Error: {agentError}", new Exception(content));
+            }
         }
 
         private static readonly string[] SubSections = new[]
