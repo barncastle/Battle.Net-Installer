@@ -9,71 +9,68 @@ using BNetInstaller.Endpoints.Repair;
 using BNetInstaller.Endpoints.Update;
 using BNetInstaller.Endpoints.Version;
 
-namespace BNetInstaller
+namespace BNetInstaller;
+
+internal class AgentApp : IDisposable
 {
-    internal class AgentApp : IDisposable
+    public readonly AgentEndpoint AgentEndpoint;
+    public readonly InstallEndpoint InstallEndpoint;
+    public readonly UpdateEndpoint UpdateEndpoint;
+    public readonly RepairEndpoint RepairEndpoint;
+    public readonly GameEndpoint GameEndpoint;
+    public readonly VersionEndpoint VersionEndpoint;
+
+    private readonly string AgentPath;
+    private readonly int Port = 5050;
+
+    private Process Process;
+    private Requester Requester;
+
+    public AgentApp()
     {
-        public readonly AgentEndpoint AgentEndpoint;
-        public readonly InstallEndpoint InstallEndpoint;
-        public readonly UpdateEndpoint UpdateEndpoint;
-        public readonly RepairEndpoint RepairEndpoint;
-        public readonly GameEndpoint GameEndpoint;
-        public readonly VersionEndpoint VersionEndpoint;
+        AgentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Battle.net", "Agent", "Agent.exe");
 
-        private readonly string AgentPath;
-        private readonly int Port = 5050;
-
-        private Process Process;
-        private Requester Requester;
-
-        public AgentApp()
+        if (!StartProcess())
         {
-            AgentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Battle.net", "Agent", "Agent.exe");
-
-            if (!StartProcess())
-            {
-                Console.WriteLine("Please ensure Battle.net is installed and has recently been opened.");
-                Environment.Exit(0);
-            }
-
-            AgentEndpoint = new AgentEndpoint(Requester);
-            InstallEndpoint = new InstallEndpoint(Requester);
-            UpdateEndpoint = new UpdateEndpoint(Requester);
-            RepairEndpoint = new RepairEndpoint(Requester);
-            GameEndpoint = new GameEndpoint(Requester);
-            VersionEndpoint = new VersionEndpoint(Requester);
+            Console.WriteLine("Please ensure Battle.net is installed and has recently been opened.");
+            Environment.Exit(0);
         }
 
-        private bool StartProcess()
-        {
-            if (File.Exists(AgentPath))
-            {
-                try
-                {
-                    Process = Process.Start(AgentPath, $"--port={Port}");
-                    Requester = new Requester(Port);
-                    return true;
-                }
-                catch (Win32Exception)
-                {
-                    Console.WriteLine("Unable to start Agent.exe.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Unable to find Agent.exe.");
-            }
+        AgentEndpoint = new(Requester);
+        InstallEndpoint = new(Requester);
+        UpdateEndpoint = new(Requester);
+        RepairEndpoint = new(Requester);
+        GameEndpoint = new(Requester);
+        VersionEndpoint = new(Requester);
+    }
 
+    private bool StartProcess()
+    {
+        if (!File.Exists(AgentPath))
+        {
+            Console.WriteLine("Unable to find Agent.exe.");
             return false;
         }
 
-        public void Dispose()
+        try
         {
-            if (Process?.HasExited == false)
-                Process.Kill();
-
-            Requester?.Dispose();
-            Process?.Dispose();
+            Process = Process.Start(AgentPath, $"--port={Port}");
+            Requester = new Requester(Port);
+            return true;
         }
+        catch (Win32Exception)
+        {
+            Console.WriteLine("Unable to start Agent.exe.");
+            return false;
+        }
+    }
+
+    public void Dispose()
+    {
+        if (Process?.HasExited == false)
+            Process.Kill();
+
+        Requester?.Dispose();
+        Process?.Dispose();
     }
 }

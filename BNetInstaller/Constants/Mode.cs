@@ -1,8 +1,7 @@
-﻿namespace BNetInstaller.Constants
+﻿namespace BNetInstaller.Constants;
+
+public enum Mode
 {
-    public enum Mode
-    {
-        Install,
-        Repair
-    }
+    Install,
+    Repair
 }

@@ -5,7 +5,7 @@ A tool for installing, updating and repairing games via Blizzard's Battle.net ap
 Windows only. See [releases](https://github.com/barncastle/Battle.Net-Installer/releases) for a compiled binary.
 
 #### Project Prerequisites
-- [.Net Core 3.1](https://dotnet.microsoft.com/download/dotnet)
+- [.NET 6.0](https://dotnet.microsoft.com/download/dotnet)
 - [Battle.net](https://www.blizzard.com/en-us/apps/battle.net/desktop) must be installed, up to date and have been recently signed in to.
 
 #### Arguments

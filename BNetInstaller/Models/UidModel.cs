@@ -1,7 +1,6 @@
-﻿namespace BNetInstaller.Models
+﻿namespace BNetInstaller.Models;
+
+internal class UidModel
 {
-    internal class UidModel
-    {
-        public string Uid { get; set; }
-    }
+    public string Uid { get; set; }
 }

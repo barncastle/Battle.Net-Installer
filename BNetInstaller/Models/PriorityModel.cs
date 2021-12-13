@@ -1,8 +1,7 @@
-﻿namespace BNetInstaller.Models
+﻿namespace BNetInstaller.Models;
+
+internal class PriorityModel
 {
-    internal class PriorityModel
-    {
-        public bool InsertAtHead { get; set; } = true;
-        public double Value { get; set; } = 900;
-    }
+    public bool InsertAtHead { get; set; } = true;
+    public double Value { get; set; } = 900;
 }

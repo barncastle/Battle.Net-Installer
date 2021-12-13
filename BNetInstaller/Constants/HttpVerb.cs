@@ -1,10 +1,9 @@
-﻿namespace BNetInstaller.Constants
+﻿namespace BNetInstaller.Constants;
+
+internal enum HttpVerb
 {
-    internal enum HttpVerb
-    {
-        GET,
-        PUT,
-        POST,
-        DELETE
-    }
+    GET,
+    PUT,
+    POST,
+    DELETE
 }

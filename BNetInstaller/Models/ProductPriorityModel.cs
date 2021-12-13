@@ -1,7 +1,6 @@
-﻿namespace BNetInstaller.Models
+﻿namespace BNetInstaller.Models;
+
+internal class ProductPriorityModel : UidModel
 {
-    internal class ProductPriorityModel : UidModel
-    {
-        public PriorityModel Priority { get; set; } = new PriorityModel();
-    }
+    public PriorityModel Priority { get; set; } = new();
 }

@@ -1,10 +1,9 @@
-﻿namespace BNetInstaller.Models
+﻿namespace BNetInstaller.Models;
+
+internal class InstallModel : ProductPriorityModel
 {
-    internal class InstallModel : ProductPriorityModel
-    {
-        public string[] InstructionsDataset { get; set; }
-        public string InstructionsPatchUrl { get; set; }
-        public string InstructionsProduct { get; set; } = "NGDP";
-        public double MonitorPid { get; set; } = 12345;
-    }
+    public string[] InstructionsDataset { get; set; }
+    public string InstructionsPatchUrl { get; set; }
+    public string InstructionsProduct { get; set; } = "NGDP";
+    public double MonitorPid { get; set; } = 12345;
 }

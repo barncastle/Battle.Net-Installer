@@ -1,18 +1,17 @@
-﻿namespace BNetInstaller.Constants
+﻿namespace BNetInstaller.Constants;
+
+internal enum Locale
 {
-    internal enum Locale
-    {
-        deDE,
-        enUS,
-        esMX,
-        ptBR,
-        esES,
-        frFR,
-        itIT,
-        koKR,
-        plPL,
-        ruRU,
-        zhCN,
-        zhTW
-    }
+    deDE,
+    enUS,
+    esMX,
+    ptBR,
+    esES,
+    frFR,
+    itIT,
+    koKR,
+    plPL,
+    ruRU,
+    zhCN,
+    zhTW
 }
