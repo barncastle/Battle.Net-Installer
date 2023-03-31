@@ -2,6 +2,8 @@
 
 internal enum Locale
 {
+    arSA
+    enSA
     deDE,
     enUS,
     esMX,
