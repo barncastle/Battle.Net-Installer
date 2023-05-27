@@ -2,7 +2,6 @@
 using System.Net.Http;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using BNetInstaller.Constants;
 using BNetInstaller.Models;
 
 namespace BNetInstaller.Endpoints;
@@ -23,7 +22,7 @@ internal abstract class BaseEndpoint<T> where T : class, IModel, new()
 
     public virtual async Task<JsonNode> Get()
     {
-        using var response = await Client.SendAsync(Endpoint, HttpVerb.GET);
+        using var response = await Client.SendAsync(Endpoint, HttpMethod.Get);
         return await Deserialize(response);
     }
 
@@ -32,7 +31,7 @@ internal abstract class BaseEndpoint<T> where T : class, IModel, new()
         if (Model is NullModel)
             return default;
 
-        using var response = await Client.SendAsync(Endpoint, HttpVerb.POST, Model);
+        using var response = await Client.SendAsync(Endpoint, HttpMethod.Post, Model);
         return await Deserialize(response);
     }
 
@@ -41,13 +40,13 @@ internal abstract class BaseEndpoint<T> where T : class, IModel, new()
         if (Model is NullModel)
             return default;
 
-        using var response = await Client.SendAsync(Endpoint, HttpVerb.PUT, Model);
+        using var response = await Client.SendAsync(Endpoint, HttpMethod.Put, Model);
         return await Deserialize(response);
     }
 
     public virtual async Task Delete()
     {
-        await Client.SendAsync(Endpoint, HttpVerb.DELETE, Model);
+        await Client.SendAsync(Endpoint, HttpMethod.Delete, Model);
     }
 
     protected async Task<JsonNode> Deserialize(HttpResponseMessage response)

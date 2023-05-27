@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
-using BNetInstaller.Constants;
 using System.Text.Json;
 
 namespace BNetInstaller;
@@ -30,11 +29,11 @@ internal sealed class AgentClient : IDisposable
         _client.DefaultRequestHeaders.Add("Authorization", authorization);
     }
 
-    public async Task<HttpResponseMessage> SendAsync(string endpoint, HttpVerb verb, string content = null)
+    public async Task<HttpResponseMessage> SendAsync(string endpoint, HttpMethod method, string content = null)
     {
-        var request = new HttpRequestMessage(new(verb.ToString()), endpoint);
+        var request = new HttpRequestMessage(method, endpoint);
 
-        if (verb != HttpVerb.GET && !string.IsNullOrEmpty(content))
+        if (method != HttpMethod.Get && !string.IsNullOrEmpty(content))
             request.Content = new StringContent(content);
 
         var response = await _client.SendAsync(request);
@@ -45,12 +44,12 @@ internal sealed class AgentClient : IDisposable
         return response;
     }
 
-    public async Task<HttpResponseMessage> SendAsync<T>(string endpoint, HttpVerb verb, T payload = null) where T : class
+    public async Task<HttpResponseMessage> SendAsync<T>(string endpoint, HttpMethod method, T payload = null) where T : class
     {
         if (payload == null)
-            return await SendAsync(endpoint, verb);
+            return await SendAsync(endpoint, method);
         else
-            return await SendAsync(endpoint, verb, JsonSerializer.Serialize(payload, _serializerOptions));
+            return await SendAsync(endpoint, method, JsonSerializer.Serialize(payload, _serializerOptions));
     }
 
     private static async Task HandleRequestFailure(HttpResponseMessage response)
