@@ -3,31 +3,25 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BNetInstaller.Constants;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using System.Text.Json;
 
 namespace BNetInstaller;
 
-internal class Requester : IDisposable
+internal sealed class AgentClient : IDisposable
 {
-    public string BaseAddress { get; }
-
     private readonly HttpClient _client;
-    private readonly JsonSerializerSettings _serializerSettings;
+    private readonly JsonSerializerOptions _serializerOptions;
 
-    public Requester(int port)
+    public AgentClient(int port)
     {
-        BaseAddress = $"http://127.0.0.1:{port}/{{0}}";
-
         _client = new();
         _client.DefaultRequestHeaders.Add("User-Agent", "phoenix-agent/1.0");
+        _client.BaseAddress = new Uri($"http://127.0.0.1:{port}");
 
-        _serializerSettings = new()
+        _serializerOptions = new()
         {
-            ContractResolver = new DefaultContractResolver()
-            {
-                NamingStrategy = new SnakeCaseNamingStrategy()
-            }
+            PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance,
+            DictionaryKeyPolicy = SnakeCaseNamingPolicy.Instance,
         };
     }
 
@@ -38,13 +32,13 @@ internal class Requester : IDisposable
 
     public async Task<HttpResponseMessage> SendAsync(string endpoint, HttpVerb verb, string content = null)
     {
-        var url = string.Format(BaseAddress, endpoint);
-        var request = new HttpRequestMessage(new(verb.ToString()), url);
+        var request = new HttpRequestMessage(new(verb.ToString()), endpoint);
 
         if (verb != HttpVerb.GET && !string.IsNullOrEmpty(content))
             request.Content = new StringContent(content);
 
         var response = await _client.SendAsync(request);
+
         if (!response.IsSuccessStatusCode)
             await HandleRequestFailure(response);
 
@@ -53,11 +47,10 @@ internal class Requester : IDisposable
 
     public async Task<HttpResponseMessage> SendAsync<T>(string endpoint, HttpVerb verb, T payload = null) where T : class
     {
-        var content = payload != null ?
-            JsonConvert.SerializeObject(payload, _serializerSettings) :
-            null;
-
-        return await SendAsync(endpoint, verb, content);
+        if (payload == null)
+            return await SendAsync(endpoint, verb);
+        else
+            return await SendAsync(endpoint, verb, JsonSerializer.Serialize(payload, _serializerOptions));
     }
 
     private static async Task HandleRequestFailure(HttpResponseMessage response)
@@ -71,5 +64,33 @@ internal class Requester : IDisposable
     public void Dispose()
     {
         _client.Dispose();
+    }
+}
+
+file class SnakeCaseNamingPolicy : JsonNamingPolicy
+{
+    public static readonly SnakeCaseNamingPolicy Instance = new();
+
+    public override string ConvertName(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+            return string.Empty;
+        
+        Span<char> lower = stackalloc char[0x100];
+        Span<char> output = stackalloc char[0x100];
+
+        name.AsSpan().ToLowerInvariant(lower);
+
+        var length = 0;
+
+        for (var i = 0; i < name.Length; i++)
+        {
+            if (i != 0 && name[i] is >= 'A' and <= 'Z')
+                output[length++] = '_';
+
+            output[length++] = lower[i];
+        }
+
+        return new string(output[..length]);
     }
 }

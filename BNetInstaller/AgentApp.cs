@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using BNetInstaller.Endpoints.Agent;
-using BNetInstaller.Endpoints.Game;
 using BNetInstaller.Endpoints.Install;
 using BNetInstaller.Endpoints.Repair;
 using BNetInstaller.Endpoints.Update;
@@ -11,20 +10,19 @@ using BNetInstaller.Endpoints.Version;
 
 namespace BNetInstaller;
 
-internal class AgentApp : IDisposable
+internal sealed class AgentApp : IDisposable
 {
     public readonly AgentEndpoint AgentEndpoint;
     public readonly InstallEndpoint InstallEndpoint;
     public readonly UpdateEndpoint UpdateEndpoint;
     public readonly RepairEndpoint RepairEndpoint;
-    public readonly GameEndpoint GameEndpoint;
     public readonly VersionEndpoint VersionEndpoint;
 
     private readonly string AgentPath;
     private readonly int Port = 5050;
 
     private Process Process;
-    private Requester Requester;
+    private AgentClient Client;
 
     public AgentApp()
     {
@@ -36,12 +34,11 @@ internal class AgentApp : IDisposable
             Environment.Exit(0);
         }
 
-        AgentEndpoint = new(Requester);
-        InstallEndpoint = new(Requester);
-        UpdateEndpoint = new(Requester);
-        RepairEndpoint = new(Requester);
-        GameEndpoint = new(Requester);
-        VersionEndpoint = new(Requester);
+        AgentEndpoint = new(Client);
+        InstallEndpoint = new(Client);
+        UpdateEndpoint = new(Client);
+        RepairEndpoint = new(Client);
+        VersionEndpoint = new(Client);
     }
 
     private bool StartProcess()
@@ -55,7 +52,7 @@ internal class AgentApp : IDisposable
         try
         {
             Process = Process.Start(AgentPath, $"--port={Port}");
-            Requester = new Requester(Port);
+            Client = new AgentClient(Port);
             return true;
         }
         catch (Win32Exception)
@@ -70,7 +67,7 @@ internal class AgentApp : IDisposable
         if (Process?.HasExited == false)
             Process.Kill();
 
-        Requester?.Dispose();
+        Client?.Dispose();
         Process?.Dispose();
     }
 }
