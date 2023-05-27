@@ -53,11 +53,12 @@ internal class Requester : IDisposable
 
     public async Task<HttpResponseMessage> SendAsync<T>(string endpoint, HttpVerb verb, T payload = null) where T : class
     {
-        var content = payload != null ?
-            JsonConvert.SerializeObject(payload, _serializerSettings) :
-            null;
+       
+            var content = payload != null ?
+                JsonConvert.SerializeObject(payload, _serializerSettings) :
+                null;
 
-        return await SendAsync(endpoint, verb, content);
+            return await SendAsync(endpoint, verb, content);
     }
 
     private static async Task HandleRequestFailure(HttpResponseMessage response)

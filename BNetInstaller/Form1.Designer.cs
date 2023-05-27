@@ -31,57 +31,57 @@ namespace BNetInstaller
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            button1 = new Button();
-            checkBox1 = new CheckBox();
-            button2 = new Button();
+            button_play = new Button();
+            checkBox_store_password = new CheckBox();
+            button_update = new Button();
             label1 = new Label();
-            label2 = new Label();
-            checkBox3 = new CheckBox();
+            label_current_version = new Label();
+            checkbox_check_files = new CheckBox();
             label3 = new Label();
-            label4 = new Label();
+            label_actual_version = new Label();
             statusStrip1 = new StatusStrip();
             toolStripSplitButton1 = new ToolStripDropDownButton();
             ruToolStripMenuItem = new ToolStripMenuItem();
             engToolStripMenuItem = new ToolStripMenuItem();
-            toolStripProgressBar1 = new ToolStripProgressBar();
-            toolStripStatusLabel1 = new ToolStripStatusLabel();
+            progressbar = new ToolStripProgressBar();
+            statusLabel = new ToolStripStatusLabel();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
-            // button1
+            // button_play
             // 
-            button1.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
-            button1.Location = new Point(10, 10);
-            button1.Name = "button1";
-            button1.Size = new Size(135, 50);
-            button1.TabIndex = 0;
-            button1.Text = "Играть";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            button_play.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
+            button_play.Location = new Point(10, 10);
+            button_play.Name = "button_play";
+            button_play.Size = new Size(135, 50);
+            button_play.TabIndex = 0;
+            button_play.Text = "Играть";
+            button_play.UseVisualStyleBackColor = true;
+            button_play.Click += button_play_Click;
             // 
-            // checkBox1
+            // checkBox_store_password
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(12, 66);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(130, 19);
-            checkBox1.TabIndex = 1;
-            checkBox1.Text = "Запомнить пароль";
-            checkBox1.UseVisualStyleBackColor = true;
-            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
+            checkBox_store_password.AutoSize = true;
+            checkBox_store_password.Location = new Point(12, 66);
+            checkBox_store_password.Name = "checkBox_store_password";
+            checkBox_store_password.Size = new Size(130, 19);
+            checkBox_store_password.TabIndex = 1;
+            checkBox_store_password.Text = "Запомнить пароль";
+            checkBox_store_password.UseVisualStyleBackColor = true;
+            checkBox_store_password.CheckedChanged += checkBox_store_password_CheckedChanged;
             // 
-            // button2
+            // button_update
             // 
-            button2.Anchor = AnchorStyles.None;
-            button2.Enabled = false;
-            button2.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
-            button2.Location = new Point(150, 10);
-            button2.Name = "button2";
-            button2.Size = new Size(135, 50);
-            button2.TabIndex = 4;
-            button2.Text = "Обновить";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            button_update.Anchor = AnchorStyles.None;
+            button_update.Enabled = false;
+            button_update.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
+            button_update.Location = new Point(150, 10);
+            button_update.Name = "button_update";
+            button_update.Size = new Size(135, 50);
+            button_update.TabIndex = 4;
+            button_update.Text = "Обновить";
+            button_update.UseVisualStyleBackColor = true;
+            button_update.Click += button_update_Click;
             // 
             // label1
             // 
@@ -92,24 +92,25 @@ namespace BNetInstaller
             label1.TabIndex = 6;
             label1.Text = "Текущая версия:";
             // 
-            // label2
+            // label_current_version
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(155, 103);
-            label2.Name = "label2";
-            label2.Size = new Size(68, 15);
-            label2.TabIndex = 7;
-            label2.Text = "неизвестна";
+            label_current_version.AutoSize = true;
+            label_current_version.Location = new Point(155, 103);
+            label_current_version.Name = "label_current_version";
+            label_current_version.Size = new Size(68, 15);
+            label_current_version.TabIndex = 7;
+            label_current_version.Text = "неизвестна";
             // 
-            // checkBox3
+            // checkbox_check_files
             // 
-            checkBox3.AutoSize = true;
-            checkBox3.Location = new Point(155, 66);
-            checkBox3.Name = "checkBox3";
-            checkBox3.Size = new Size(125, 19);
-            checkBox3.TabIndex = 8;
-            checkBox3.Text = "Проверка файлов";
-            checkBox3.UseVisualStyleBackColor = true;
+            checkbox_check_files.AutoSize = true;
+            checkbox_check_files.Location = new Point(155, 66);
+            checkbox_check_files.Name = "checkbox_check_files";
+            checkbox_check_files.Size = new Size(125, 19);
+            checkbox_check_files.TabIndex = 8;
+            checkbox_check_files.Text = "Проверка файлов";
+            checkbox_check_files.UseVisualStyleBackColor = true;
+            checkbox_check_files.CheckedChanged += checkbox_check_files_CheckedChanged;
             // 
             // label3
             // 
@@ -120,23 +121,24 @@ namespace BNetInstaller
             label3.TabIndex = 9;
             label3.Text = "Актуальная версия:";
             // 
-            // label4
+            // label_actual_version
             // 
-            label4.AutoSize = true;
-            label4.Location = new Point(12, 103);
-            label4.Name = "label4";
-            label4.Size = new Size(68, 15);
-            label4.TabIndex = 10;
-            label4.Text = "неизвестна";
-            label4.TextAlign = ContentAlignment.MiddleRight;
+            label_actual_version.AutoSize = true;
+            label_actual_version.Location = new Point(12, 103);
+            label_actual_version.Name = "label_actual_version";
+            label_actual_version.Size = new Size(68, 15);
+            label_actual_version.TabIndex = 10;
+            label_actual_version.Text = "неизвестна";
+            label_actual_version.TextAlign = ContentAlignment.MiddleRight;
             // 
             // statusStrip1
             // 
             statusStrip1.ImeMode = ImeMode.NoControl;
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripSplitButton1, toolStripProgressBar1, toolStripStatusLabel1 });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripSplitButton1, progressbar, statusLabel });
             statusStrip1.Location = new Point(0, 129);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(294, 22);
+            statusStrip1.SizingGrip = false;
             statusStrip1.TabIndex = 12;
             // 
             // toolStripSplitButton1
@@ -163,18 +165,17 @@ namespace BNetInstaller
             engToolStripMenuItem.Text = "Английский";
             engToolStripMenuItem.Click += engToolStripMenuItem_Click;
             // 
-            // toolStripProgressBar1
+            // progressbar
             // 
-            toolStripProgressBar1.Name = "toolStripProgressBar1";
-            toolStripProgressBar1.Size = new Size(125, 16);
-            toolStripProgressBar1.Visible = false;
+            progressbar.Name = "progressbar";
+            progressbar.Size = new Size(125, 16);
+            progressbar.Visible = false;
             // 
-            // toolStripStatusLabel1
+            // statusLabel
             // 
-            toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            toolStripStatusLabel1.Size = new Size(39, 17);
-            toolStripStatusLabel1.Text = "Status";
-            toolStripStatusLabel1.Click += toolStripStatusLabel1_Click;
+            statusLabel.Name = "statusLabel";
+            statusLabel.Size = new Size(0, 17);
+            statusLabel.Click += toolStripStatusLabel1_Click;
             // 
             // Form1
             // 
@@ -182,15 +183,15 @@ namespace BNetInstaller
             BackColor = SystemColors.Control;
             ClientSize = new Size(294, 151);
             Controls.Add(statusStrip1);
-            Controls.Add(label4);
+            Controls.Add(label_actual_version);
             Controls.Add(label3);
-            Controls.Add(checkBox3);
-            Controls.Add(label2);
+            Controls.Add(checkbox_check_files);
+            Controls.Add(label_current_version);
             Controls.Add(label1);
-            Controls.Add(button2);
-            Controls.Add(checkBox1);
-            Controls.Add(button1);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Controls.Add(button_update);
+            Controls.Add(checkBox_store_password);
+            Controls.Add(button_play);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimizeBox = false;
@@ -206,17 +207,17 @@ namespace BNetInstaller
 
         #endregion
 
-        private Button button1;
-        private CheckBox checkBox1;
-        private Button button2;
+        private Button button_play;
+        private CheckBox checkBox_store_password;
+        private Button button_update;
         private Label label1;
-        private Label label2;
-        private CheckBox checkBox3;
+        private Label label_current_version;
+        private CheckBox checkbox_check_files;
         private Label label3;
-        private Label label4;
+        private Label label_actual_version;
         private StatusStrip statusStrip1;
-        private ToolStripProgressBar toolStripProgressBar1;
-        private ToolStripStatusLabel toolStripStatusLabel1;
+        private ToolStripProgressBar progressbar;
+        private ToolStripStatusLabel statusLabel;
         private ToolStripDropDownButton toolStripSplitButton1;
         private ToolStripMenuItem ruToolStripMenuItem;
         private ToolStripMenuItem engToolStripMenuItem;

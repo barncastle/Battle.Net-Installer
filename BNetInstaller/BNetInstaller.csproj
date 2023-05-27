@@ -12,6 +12,8 @@
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
         <IncludeSymbols>False</IncludeSymbols>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
+        <AssemblyName>D4 Launcher</AssemblyName>
+        <Company>Evil Toaster, Ba4ar</Company>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -31,11 +33,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CommandLineParser" Version="2.8.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Costura.Fody" Version="5.7.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
-
-    <ItemGroup>
+  
+  <ItemGroup>
       <Compile Update="Properties\Resources.Designer.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
