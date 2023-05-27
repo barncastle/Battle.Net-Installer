@@ -110,13 +110,13 @@ internal static class Program
             var stats = await endpoint.Get();
 
             // check for completion
-            var complete = stats.Value<bool?>("download_complete");
+            var complete = stats["download_complete"]?.GetValue<bool?>();
             if (complete == true)
                 return true;
 
             // get progress percentage and playability
-            var progress = stats.Value<float?>("progress");
-            var playable = stats.Value<bool?>("playable");
+            var progress = stats["progress"]?.GetValue<float?>();
+            var playable = stats["playable"]?.GetValue<bool?>();
 
             if (!progress.HasValue)
                 return false;

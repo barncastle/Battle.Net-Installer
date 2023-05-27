@@ -1,38 +1,21 @@
-﻿using System.Threading.Tasks;
-using BNetInstaller.Constants;
+﻿using System.Text.Json.Nodes;
 using BNetInstaller.Models;
-using Newtonsoft.Json.Linq;
 
 namespace BNetInstaller.Endpoints;
 
-internal class ProductEndpoint : BaseEndpoint
+internal sealed class ProductEndpoint : BaseEndpoint<ProductModel>
 {
-    public ProductModel Model { get; }
-
-    public ProductEndpoint(string endpoint, Requester requester) : base(endpoint, requester)
+    public ProductEndpoint(string endpoint, AgentClient client) : base(endpoint, client)
     {
-        Model = new();
     }
 
-    public async Task<JToken> Get()
+    public static ProductEndpoint CreateFromResponse(JsonNode content, AgentClient client)
     {
-        using var response = await Requester.SendAsync(Endpoint, HttpVerb.GET);
-        return await Deserialize(response);
-    }
+        var responseURI = content["response_uri"]?.GetValue<string>();
 
-    public async Task<JToken> Post()
-    {
-        using var response = await Requester.SendAsync(Endpoint, HttpVerb.POST, Model);
-        return await Deserialize(response);
-    }
+        if (string.IsNullOrEmpty(responseURI))
+            return null;
 
-    public static ProductEndpoint CreateFromResponse(JToken content, Requester requester)
-    {
-        var responseURI = content.Value<string>("response_uri");
-
-        if (!string.IsNullOrEmpty(responseURI))
-            return new(responseURI.TrimStart('/'), requester);
-
-        return null;
+        return new(responseURI.TrimStart('/'), client);
     }
 }

@@ -1,32 +1,18 @@
 ﻿using System;
-using System.Threading.Tasks;
-using BNetInstaller.Constants;
+using System.Text.Json.Nodes;
 using BNetInstaller.Models;
-using Newtonsoft.Json.Linq;
 
 namespace BNetInstaller.Endpoints.Install;
 
-internal class InstallEndpoint : BaseEndpoint
+internal sealed class InstallEndpoint : BaseProductEndpoint<InstallModel>
 {
-    public InstallModel Model { get; }
-    public ProductEndpoint Product { get; private set; }
-
-    public InstallEndpoint(Requester requester) : base("install", requester)
+    public InstallEndpoint(AgentClient client) : base("install", client)
     {
-        Model = new();
     }
 
-    public async Task<JToken> Post()
+    protected override void ValidateResponse(JsonNode response, string content)
     {
-        using var response = await Requester.SendAsync(Endpoint, HttpVerb.POST, Model);
-        var content = await Deserialize(response);
-        Product = ProductEndpoint.CreateFromResponse(content, Requester);
-        return content;
-    }
-
-    protected override void ValidateResponse(JToken response, string content)
-    {
-        var agentError = response.Value<float?>("error");
+        var agentError = response["error"]?.GetValue<float?>();
 
         if (agentError > 0)
         {
@@ -34,7 +20,8 @@ internal class InstallEndpoint : BaseEndpoint
             foreach (var section in SubSections)
             {
                 var token = response["form"]?[section];
-                var errorCode = token?.Value<float?>("error");
+                var errorCode = token?["error"]?.GetValue<float?>();
+
                 if (errorCode > 0)
                     throw new Exception($"Agent Error: Unable to install - {errorCode} ({section}).", new(content));
             }
