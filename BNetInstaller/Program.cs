@@ -11,7 +11,7 @@ internal static class Program
     private static async Task Main(string[] args)
     {
         if (args == null || args.Length == 0)
-            args = Options.Generate();
+            args = Options.Create();
 
         using Parser parser = new(s =>
         {

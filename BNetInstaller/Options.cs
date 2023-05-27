@@ -5,7 +5,7 @@ using CommandLine;
 
 namespace BNetInstaller;
 
-internal class Options
+internal sealed class Options
 {
     [Option("prod", Required = true, HelpText = "TACT Product")]
     public string Product { get; set; }
@@ -37,7 +37,7 @@ internal class Options
         Directory = Directory.Replace("/", "\\").Trim().TrimEnd('\\') + '\\';
     }
 
-    public static string[] Generate()
+    public static string[] Create()
     {
         static string GetInput(string message)
         {
