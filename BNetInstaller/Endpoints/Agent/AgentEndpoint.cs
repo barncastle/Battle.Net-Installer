@@ -1,8 +1,4 @@
-﻿using System;
-using System.Text.Json.Nodes;
-using BNetInstaller.Models;
-
-namespace BNetInstaller.Endpoints.Agent;
+﻿namespace BNetInstaller.Endpoints.Agent;
 
 internal sealed class AgentEndpoint : BaseEndpoint<NullModel>
 {

@@ -1,7 +1,4 @@
-﻿using System.Text.Json.Nodes;
-using BNetInstaller.Models;
-
-namespace BNetInstaller.Endpoints;
+﻿namespace BNetInstaller.Endpoints;
 
 internal sealed class ProductEndpoint : BaseEndpoint<ProductModel>
 {

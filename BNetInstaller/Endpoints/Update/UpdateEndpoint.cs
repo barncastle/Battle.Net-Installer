@@ -1,6 +1,4 @@
-﻿using BNetInstaller.Models;
-
-namespace BNetInstaller.Endpoints.Update;
+﻿namespace BNetInstaller.Endpoints.Update;
 
 internal sealed class UpdateEndpoint : BaseProductEndpoint<ProductPriorityModel>
 {

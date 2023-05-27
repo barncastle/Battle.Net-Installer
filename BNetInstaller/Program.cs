@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using BNetInstaller.Constants;
+﻿using BNetInstaller.Constants;
 using BNetInstaller.Endpoints;
 using CommandLine;
 

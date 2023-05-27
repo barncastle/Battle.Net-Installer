@@ -1,6 +1,4 @@
-﻿using BNetInstaller.Models;
-
-namespace BNetInstaller.Endpoints.Repair;
+﻿namespace BNetInstaller.Endpoints.Repair;
 
 internal sealed class RepairEndpoint : BaseProductEndpoint<ProductPriorityModel>
 {

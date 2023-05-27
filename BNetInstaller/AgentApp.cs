@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using BNetInstaller.Endpoints.Agent;
 using BNetInstaller.Endpoints.Install;
 using BNetInstaller.Endpoints.Repair;
@@ -12,6 +10,8 @@ namespace BNetInstaller;
 
 internal sealed class AgentApp : IDisposable
 {
+    public const int Port = 5050;
+
     public readonly AgentEndpoint AgentEndpoint;
     public readonly InstallEndpoint InstallEndpoint;
     public readonly UpdateEndpoint UpdateEndpoint;
@@ -19,20 +19,21 @@ internal sealed class AgentApp : IDisposable
     public readonly VersionEndpoint VersionEndpoint;
 
     private readonly string AgentPath;
-    private readonly int Port = 5050;
-
-    private Process Process;
-    private AgentClient Client;
+    private readonly Process Process;
+    private readonly AgentClient Client;
 
     public AgentApp()
     {
         AgentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Battle.net", "Agent", "Agent.exe");
 
-        if (!StartProcess())
+        if (!StartProcess(out var process))
         {
             Console.WriteLine("Please ensure Battle.net is installed and has recently been opened.");
             Environment.Exit(0);
         }
+
+        Process = process;
+        Client = new(Port);
 
         AgentEndpoint = new(Client);
         InstallEndpoint = new(Client);
@@ -41,22 +42,23 @@ internal sealed class AgentApp : IDisposable
         VersionEndpoint = new(Client);
     }
 
-    private bool StartProcess()
+    private bool StartProcess(out Process process)
     {
         if (!File.Exists(AgentPath))
         {
+            process= null;
             Console.WriteLine("Unable to find Agent.exe.");
             return false;
         }
 
         try
         {
-            Process = Process.Start(AgentPath, $"--port={Port}");
-            Client = new AgentClient(Port);
+            process = Process.Start(AgentPath, $"--port={Port}");
             return true;
         }
         catch (Win32Exception)
         {
+            process = null;
             Console.WriteLine("Unable to start Agent.exe.");
             return false;
         }

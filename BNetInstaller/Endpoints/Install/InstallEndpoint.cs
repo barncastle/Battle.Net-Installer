@@ -1,8 +1,4 @@
-﻿using System;
-using System.Text.Json.Nodes;
-using BNetInstaller.Models;
-
-namespace BNetInstaller.Endpoints.Install;
+﻿namespace BNetInstaller.Endpoints.Install;
 
 internal sealed class InstallEndpoint : BaseProductEndpoint<InstallModel>
 {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
-using BNetInstaller.Models;
-
-namespace BNetInstaller.Endpoints;
+﻿namespace BNetInstaller.Endpoints;
 
 internal abstract class BaseEndpoint<T> where T : class, IModel, new()
 {

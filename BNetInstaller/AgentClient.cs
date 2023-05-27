@@ -1,8 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Text.Json;
+﻿using System.Diagnostics;
 
 namespace BNetInstaller;
 
@@ -15,7 +11,7 @@ internal sealed class AgentClient : IDisposable
     {
         _client = new();
         _client.DefaultRequestHeaders.Add("User-Agent", "phoenix-agent/1.0");
-        _client.BaseAddress = new Uri($"http://127.0.0.1:{port}");
+        _client.BaseAddress = new($"http://127.0.0.1:{port}");
 
         _serializerOptions = new()
         {
