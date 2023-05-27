@@ -5,7 +5,7 @@ using CommandLine;
 
 namespace BNetInstaller;
 
-internal sealed class Options
+internal sealed partial class Options
 {
     [Option("prod", Required = true, HelpText = "TACT Product")]
     public string Product { get; set; }
@@ -30,7 +30,7 @@ internal sealed class Options
 
         // remove _locale suffix for wiki copy-pasters
         if (UID.Contains("_locale", StringComparison.OrdinalIgnoreCase))
-            UID = Regex.Replace(UID, "\\(?_locale\\)?", $"_{Locale}", RegexOptions.IgnoreCase);
+            UID = LocaleSuffixRegex().Replace(UID, $"_{Locale}");
 
         Product = Product.ToLowerInvariant().Trim();
         UID = UID.ToLowerInvariant().Trim();
@@ -68,4 +68,7 @@ internal sealed class Options
 
         return args;
     }
+
+    [GeneratedRegex("\\(?_locale\\)?", RegexOptions.IgnoreCase, "en-GB")]
+    private static partial Regex LocaleSuffixRegex();
 }
