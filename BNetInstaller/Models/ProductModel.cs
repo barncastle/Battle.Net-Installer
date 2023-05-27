@@ -1,6 +1,6 @@
 ﻿namespace BNetInstaller.Models;
 
-internal class ProductModel
+internal sealed class ProductModel : IModel
 {
     public string AccountCountry { get; set; } = "USA";
     public bool Finalized { get; set; } = true;
