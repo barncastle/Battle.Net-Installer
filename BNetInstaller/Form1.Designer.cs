@@ -82,7 +82,7 @@ namespace BNetInstaller
             button_update.TabIndex = 4;
             button_update.Text = "Обновить";
             button_update.UseVisualStyleBackColor = true;
-            button_update.Click += button_update_Click;
+            button_update.Click += button_update_ClickAsync;
             // 
             // label1
             // 

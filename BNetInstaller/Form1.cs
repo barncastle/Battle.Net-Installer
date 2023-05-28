@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using BNetInstaller.Constants;
 using BNetInstaller.Endpoints;
 using System.Drawing;
+using System.Diagnostics;
 
 
 namespace BNetInstaller
@@ -184,10 +185,21 @@ namespace BNetInstaller
             Application.Exit();
         }
 
-        private async void button_update_Click(object sender, EventArgs e)
+        private async void button_update_ClickAsync(object sender, EventArgs e)
         {
-            await Run();
-
+            // Проверяем, запущена ли программа Battle.net.exe
+            Process[] processes = Process.GetProcessesByName("Battle.net");
+            if (processes.Length > 0)
+            {
+                // Программа запущена, выполняем обновление
+                await Run();
+            }
+            else
+            {
+                // Программа не запущена
+                statusLabel.Text = "Сначала запустите Battle.net";
+                System.Media.SystemSounds.Hand.Play(); // Воспроизвести звук ошибки
+            }
         }
 
         // Сохранение состояния checkBox1
