@@ -40,7 +40,7 @@ internal abstract class BaseEndpoint<T> where T : class, IModel, new()
 
     public virtual async Task Delete()
     {
-        await Client.SendAsync(Endpoint, HttpMethod.Delete, Model);
+        await Client.SendAsync(Endpoint, HttpMethod.Delete);
     }
 
     protected async Task<JsonNode> Deserialize(HttpResponseMessage response)
