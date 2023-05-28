@@ -71,21 +71,20 @@ file class SnakeCaseNamingPolicy : JsonNamingPolicy
         if (string.IsNullOrEmpty(name))
             return string.Empty;
         
-        Span<char> lower = stackalloc char[0x100];
+        Span<char> input = stackalloc char[0x100];
         Span<char> output = stackalloc char[0x100];
 
-        name.AsSpan().ToLowerInvariant(lower);
+        var inputLen = name.AsSpan().ToLowerInvariant(input);
+        var outputLen = 0;
 
-        var length = 0;
-
-        for (var i = 0; i < name.Length; i++)
+        for (var i = 0; i < inputLen; i++)
         {
             if (i != 0 && name[i] is >= 'A' and <= 'Z')
-                output[length++] = '_';
+                output[outputLen++] = '_';
 
-            output[length++] = lower[i];
+            output[outputLen++] = input[i];
         }
 
-        return new string(output[..length]);
+        return new string(output[..outputLen]);
     }
 }
