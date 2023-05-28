@@ -79,7 +79,7 @@ file class SnakeCaseNamingPolicy : JsonNamingPolicy
 
         for (var i = 0; i < inputLen; i++)
         {
-            if (i != 0 && name[i] is >= 'A' and <= 'Z')
+            if (name[i] is >= 'A' and <= 'Z' && i != 0)
                 output[outputLen++] = '_';
 
             output[outputLen++] = input[i];
