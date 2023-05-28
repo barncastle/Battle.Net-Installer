@@ -2,9 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BNetInstaller.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Properties" Type="System.String" Scope="Application">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="CheckBox1State" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>

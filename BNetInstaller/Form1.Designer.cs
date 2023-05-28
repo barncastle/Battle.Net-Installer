@@ -50,6 +50,7 @@ namespace BNetInstaller
             // 
             // button_play
             // 
+            button_play.Enabled = false;
             button_play.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
             button_play.Location = new Point(10, 10);
             button_play.Name = "button_play";
@@ -135,9 +136,9 @@ namespace BNetInstaller
             // 
             statusStrip1.ImeMode = ImeMode.NoControl;
             statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripSplitButton1, progressbar, statusLabel });
-            statusStrip1.Location = new Point(0, 129);
+            statusStrip1.Location = new Point(0, 126);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(294, 22);
+            statusStrip1.Size = new Size(294, 25);
             statusStrip1.SizingGrip = false;
             statusStrip1.TabIndex = 12;
             // 
@@ -147,7 +148,7 @@ namespace BNetInstaller
             toolStripSplitButton1.DropDownItems.AddRange(new ToolStripItem[] { ruToolStripMenuItem, engToolStripMenuItem });
             toolStripSplitButton1.ImageTransparentColor = Color.Magenta;
             toolStripSplitButton1.Name = "toolStripSplitButton1";
-            toolStripSplitButton1.Size = new Size(13, 20);
+            toolStripSplitButton1.Size = new Size(13, 23);
             toolStripSplitButton1.Text = "toolStripSplitButton1";
             toolStripSplitButton1.TextDirection = ToolStripTextDirection.Horizontal;
             // 
@@ -168,13 +169,13 @@ namespace BNetInstaller
             // progressbar
             // 
             progressbar.Name = "progressbar";
-            progressbar.Size = new Size(125, 16);
+            progressbar.Size = new Size(110, 19);
             progressbar.Visible = false;
             // 
             // statusLabel
             // 
             statusLabel.Name = "statusLabel";
-            statusLabel.Size = new Size(0, 17);
+            statusLabel.Size = new Size(0, 20);
             statusLabel.Click += toolStripStatusLabel1_Click;
             // 
             // Form1

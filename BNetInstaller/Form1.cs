@@ -14,12 +14,12 @@ namespace BNetInstaller
 {
     public partial class Form1 : Form
     {
-
+        string dir = Directory.GetCurrentDirectory();
         string product = "osi";
         string uid = "osi";
         string locale = "";
         bool isRepair = false;
-        string dir = "";
+        //string dir = Properties.Settings.Default.Dir;
         Image lang_en = Properties.Resources.lang_en;
         Image lang_ru = Properties.Resources.lang_ru;
 
@@ -56,6 +56,7 @@ namespace BNetInstaller
             {
                 ruToolStripMenuItem.Checked = true;
                 toolStripSplitButton1.Image = lang_ru;
+                locale = "ruRU";
             }
 
             checkBox_store_password.Checked = Properties.Settings.Default.CheckBox1State;
@@ -70,8 +71,6 @@ namespace BNetInstaller
             ruToolStripMenuItem.Click += ruToolStripMenuItem_Click;
             CompareLabelsAndSetButtonAvailability();
             CompareLabelsAndSetButton1Availability();
-
-
 
             label_current_version.Text = lastVersion;
             label_actual_version.Text = version;
@@ -439,15 +438,16 @@ namespace BNetInstaller
             button_play.Enabled = true;
             checkbox_check_files.Enabled = true;
             checkbox_check_files.Checked = false;
-           
+
             // Обновление lastVersion и version
             string filePath = dir + ".build.info";
             string lastVersion = GetLastVersionFromBuildInfo(filePath);
             string url = "http://eu.patch.battle.net:1119/" + product + "/versions";
             string version = await GetVersionFromBuildInfo(url);
             label_current_version.Text = lastVersion;
-            label_actual_version.Text = version; 
+            label_actual_version.Text = version;
             toolStripSplitButton1.Enabled = true;
         }
+
     }
 }

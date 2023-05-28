@@ -13,7 +13,7 @@
         <IncludeSymbols>False</IncludeSymbols>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <AssemblyName>D4 Launcher</AssemblyName>
-        <Company>Evil Toaster, Ba4ar</Company>
+        <Company></Company>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
