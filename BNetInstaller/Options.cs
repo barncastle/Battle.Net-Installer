@@ -62,7 +62,7 @@ internal sealed partial class Options
         Console.WriteLine();
 
         // fix repair arg
-        if (args[8] != "" && args[8][0] == 'Y')
+        if (args[8] is ['Y', ..])
             args[8] = "--repair";
 
         return args;
