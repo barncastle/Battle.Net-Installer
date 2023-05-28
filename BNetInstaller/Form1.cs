@@ -14,12 +14,11 @@ namespace BNetInstaller
 {
     public partial class Form1 : Form
     {
-        string dir = Directory.GetCurrentDirectory();
+        string dir;
         string product = "osi";
         string uid = "osi";
         string locale = "";
         bool isRepair = false;
-        //string dir = Properties.Settings.Default.Dir;
         Image lang_en = Properties.Resources.lang_en;
         Image lang_ru = Properties.Resources.lang_ru;
 
@@ -31,7 +30,8 @@ namespace BNetInstaller
         }
         private async void Form1_Load(object sender, EventArgs e)
         {
-
+            string currentDirectory = Application.StartupPath;
+            string dir = currentDirectory + "\\";
             // Чтение настроек
             bool isRussianSelected = Properties.Settings.Default.IsRussianSelected;
             bool isEnglishSelected = Properties.Settings.Default.IsEnglishSelected;
