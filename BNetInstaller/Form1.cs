@@ -15,10 +15,8 @@ namespace BNetInstaller
 {
     public partial class Form1 : Form
     {
-        string dir = "";
-        //string dir = "D:\\Games\\Diablo II Resurrected\\";
-        string product = "osi";
-        string uid = "osi";
+        string product = "fenris";
+        string uid = "fenris";
         string locale = "";
         bool isRepair = false;
         Image lang_en = Properties.Resources.lang_en;
@@ -40,8 +38,6 @@ namespace BNetInstaller
         private async void Form1_Load(object sender, EventArgs e)
         {
             taskbarManager = TaskbarManager.Instance;
-            string currentDirectory = Application.StartupPath;
-            string dir = currentDirectory + "\\";
             // Чтение настроек
             bool isRussianSelected = Properties.Settings.Default.IsRussianSelected;
             bool isEnglishSelected = Properties.Settings.Default.IsEnglishSelected;
@@ -70,6 +66,8 @@ namespace BNetInstaller
             }
 
             checkBox_store_password.Checked = Properties.Settings.Default.CheckBox1State;
+            string currentDirectory = Application.StartupPath;
+            string dir = currentDirectory + "\\";
             string filePath = dir + ".build.info";
             string lastVersion = GetLastVersionFromBuildInfo(filePath);
             string url = "http://eu.patch.battle.net:1119/" + product + "/versions";
@@ -96,19 +94,61 @@ namespace BNetInstaller
 
         private async Task<string> GetVersionFromBuildInfo(string url)
         {
-            string version = string.Empty;
+            string version = "отсутствует";
 
-            using (HttpClient client = new HttpClient())
+            try
             {
-                HttpResponseMessage response = await client.GetAsync(url);
-
-                if (response.IsSuccessStatusCode)
+                using (HttpClient client = new HttpClient())
                 {
-                    string buildInfo = await response.Content.ReadAsStringAsync();
+                    HttpResponseMessage response = await client.GetAsync(url);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string buildInfo = await response.Content.ReadAsStringAsync();
+
+                        // Используем регулярное выражение для поиска числового значения
+                        // в строке формата "цифры.цифры.цифры" (например, "1.6.74264")
+                        Regex regex = new Regex(@"\d+\.\d+\.\d+\.\d+");
+
+                        // Ищем совпадения в строке
+                        MatchCollection matches = regex.Matches(buildInfo);
+
+                        // Если найдено хотя бы одно совпадение
+                        if (matches.Count > 0)
+                        {
+                            // Получаем последнее найденное совпадение
+                            Match lastMatch = matches[matches.Count - 1];
+
+                            // Получаем значение совпадения
+                            version = lastMatch.Value;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Обработка ошибки запроса URL
+                // Устанавливаем значение "неизвестна"
+                version = "отсутствует";
+            }
+
+            return version;
+        }
+
+
+        private string GetLastVersionFromBuildInfo(string filePath)
+        {
+            string lastVersion = "отсутствует";
+
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    string buildInfo = File.ReadAllText(filePath);
 
                     // Используем регулярное выражение для поиска числового значения
                     // в строке формата "цифры.цифры.цифры" (например, "1.6.74264")
-                    Regex regex = new Regex(@"\d+\.\d+\.\d+");
+                    Regex regex = new Regex(@"\d+\.\d+\.\d+\.\d+");
 
                     // Ищем совпадения в строке
                     MatchCollection matches = regex.Matches(buildInfo);
@@ -120,38 +160,17 @@ namespace BNetInstaller
                         Match lastMatch = matches[matches.Count - 1];
 
                         // Получаем значение совпадения
-                        version = lastMatch.Value;
+                        lastVersion = lastMatch.Value;
                     }
                 }
+
+                return lastVersion;
             }
-
-            return version;
-        }
-
-        private string GetLastVersionFromBuildInfo(string filePath)
-        {
-            string lastVersion = string.Empty;
-
-            if (File.Exists(filePath))
+            catch (Exception)
             {
-                string buildInfo = File.ReadAllText(filePath);
-
-                // Используем регулярное выражение для поиска числового значения
-                // в строке формата "цифры.цифры.цифры" (например, "1.6.74264")
-                Regex regex = new Regex(@"\d+\.\d+\.\d+");
-
-                // Ищем совпадения в строке
-                MatchCollection matches = regex.Matches(buildInfo);
-
-                // Если найдено хотя бы одно совпадение
-                if (matches.Count > 0)
-                {
-                    // Получаем последнее найденное совпадение
-                    Match lastMatch = matches[matches.Count - 1];
-
-                    // Получаем значение совпадения
-                    lastVersion = lastMatch.Value;
-                }
+                // Обработка ошибки запроса URL
+                // Устанавливаем значение "неизвестна"
+                lastVersion = "отсутствует";
             }
 
             return lastVersion;
@@ -159,7 +178,9 @@ namespace BNetInstaller
 
         private void button_play_Click(object sender, EventArgs e)
         {
-            string pathToExecutable = dir + "d2r.exe";
+            string currentDirectory = Application.StartupPath;
+            string dir = currentDirectory + "\\";
+            string pathToExecutable = dir + "Diablo VI.exe";
             string parameter1 = "-launch";
             string parameter2 = "";
             if (checkBox_store_password.Checked)
@@ -284,7 +305,8 @@ namespace BNetInstaller
 
         async Task Run()
         {
-
+            string currentDirectory = Application.StartupPath;
+            string dir = currentDirectory + "\\";
             using AgentApp app = new();
 
             var mode = isRepair ? Mode.Repair : Mode.Install;
@@ -425,6 +447,8 @@ namespace BNetInstaller
 
         private async Task afterUpdateFunctions()
         {
+            string currentDirectory = Application.StartupPath;
+            string dir = currentDirectory + "\\";
             progressbar.Visible = false;
             taskbarManager.SetProgressState(TaskbarProgressBarState.NoProgress);
             statusLabel.Text = "Готово";
@@ -433,7 +457,7 @@ namespace BNetInstaller
             checkbox_check_files.Enabled = true;
             checkbox_check_files.Checked = false;
             toolStripSplitButton1.Enabled = true;
-
+            checkBox_store_password.Enabled = true;
             // Обновление lastVersion и version
             string url = "http://eu.patch.battle.net:1119/" + product + "/versions";
             string version = await GetVersionFromBuildInfo(url);

@@ -2,7 +2,7 @@
 
 internal class ProductModel
 {
-    public string AccountCountry { get; set; } = "USA";
+    public string AccountCountry { get; set; } = "RUS";
     public bool Finalized { get; set; } = true;
     public string GameDir { get; set; }
     public string GeoIpCountry { get; set; } = "EU";

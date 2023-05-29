@@ -47,7 +47,6 @@ namespace BNetInstaller
             engToolStripMenuItem = new ToolStripMenuItem();
             progressbar = new ToolStripProgressBar();
             statusLabel = new ToolStripStatusLabel();
-            ывToolStripMenuItem = new ToolStripMenuItem();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -66,7 +65,8 @@ namespace BNetInstaller
             // checkBox_store_password
             // 
             checkBox_store_password.AutoSize = true;
-            checkBox_store_password.Location = new Point(12, 66);
+            checkBox_store_password.ForeColor = Color.FromArgb(60, 63, 65);
+            checkBox_store_password.Location = new Point(10, 66);
             checkBox_store_password.Name = "checkBox_store_password";
             checkBox_store_password.Size = new Size(130, 19);
             checkBox_store_password.TabIndex = 1;
@@ -89,8 +89,9 @@ namespace BNetInstaller
             // label1
             // 
             label1.AutoSize = true;
+            label1.BackColor = Color.FromArgb(60, 63, 65);
             label1.ForeColor = Color.FromArgb(220, 220, 220);
-            label1.Location = new Point(155, 88);
+            label1.Location = new Point(150, 88);
             label1.Name = "label1";
             label1.Size = new Size(98, 15);
             label1.TabIndex = 6;
@@ -100,16 +101,16 @@ namespace BNetInstaller
             // 
             label_current_version.AutoSize = true;
             label_current_version.ForeColor = Color.FromArgb(220, 220, 220);
-            label_current_version.Location = new Point(155, 103);
+            label_current_version.Location = new Point(150, 103);
             label_current_version.Name = "label_current_version";
-            label_current_version.Size = new Size(68, 15);
+            label_current_version.Size = new Size(0, 15);
             label_current_version.TabIndex = 7;
-            label_current_version.Text = "неизвестна";
             // 
             // checkbox_check_files
             // 
             checkbox_check_files.AutoSize = true;
-            checkbox_check_files.Location = new Point(155, 66);
+            checkbox_check_files.ForeColor = Color.FromArgb(60, 63, 65);
+            checkbox_check_files.Location = new Point(150, 66);
             checkbox_check_files.Name = "checkbox_check_files";
             checkbox_check_files.Size = new Size(125, 19);
             checkbox_check_files.TabIndex = 8;
@@ -119,6 +120,7 @@ namespace BNetInstaller
             // label3
             // 
             label3.AutoSize = true;
+            label3.BackColor = Color.FromArgb(60, 63, 65);
             label3.ForeColor = Color.FromArgb(220, 220, 220);
             label3.Location = new Point(12, 88);
             label3.Name = "label3";
@@ -132,9 +134,9 @@ namespace BNetInstaller
             label_actual_version.ForeColor = Color.FromArgb(220, 220, 220);
             label_actual_version.Location = new Point(12, 103);
             label_actual_version.Name = "label_actual_version";
-            label_actual_version.Size = new Size(68, 15);
+            label_actual_version.RightToLeft = RightToLeft.Yes;
+            label_actual_version.Size = new Size(0, 15);
             label_actual_version.TabIndex = 10;
-            label_actual_version.Text = "неизвестна";
             label_actual_version.TextAlign = ContentAlignment.MiddleRight;
             // 
             // statusStrip1
@@ -168,7 +170,7 @@ namespace BNetInstaller
             ruToolStripMenuItem.Image = Properties.Resources.lang_ru;
             ruToolStripMenuItem.ImageTransparentColor = Color.Transparent;
             ruToolStripMenuItem.Name = "ruToolStripMenuItem";
-            ruToolStripMenuItem.Size = new Size(180, 22);
+            ruToolStripMenuItem.Size = new Size(141, 22);
             ruToolStripMenuItem.Text = "Русский";
             ruToolStripMenuItem.Click += ruToolStripMenuItem_Click;
             // 
@@ -177,7 +179,7 @@ namespace BNetInstaller
             engToolStripMenuItem.BackColor = SystemColors.ControlDarkDark;
             engToolStripMenuItem.Image = Properties.Resources.lang_en;
             engToolStripMenuItem.Name = "engToolStripMenuItem";
-            engToolStripMenuItem.Size = new Size(180, 22);
+            engToolStripMenuItem.Size = new Size(141, 22);
             engToolStripMenuItem.Text = "Английский";
             engToolStripMenuItem.Click += engToolStripMenuItem_Click;
             // 
@@ -189,14 +191,9 @@ namespace BNetInstaller
             // 
             // statusLabel
             // 
+            statusLabel.BackColor = Color.FromArgb(60, 63, 65);
             statusLabel.Name = "statusLabel";
             statusLabel.Size = new Size(0, 17);
-            // 
-            // ывToolStripMenuItem
-            // 
-            ывToolStripMenuItem.Name = "ывToolStripMenuItem";
-            ывToolStripMenuItem.Size = new Size(89, 22);
-            ывToolStripMenuItem.Text = "ыв";
             // 
             // Form1
             // 
@@ -241,6 +238,5 @@ namespace BNetInstaller
         private ToolStripDropDownButton toolStripSplitButton1;
         private ToolStripMenuItem ruToolStripMenuItem;
         private ToolStripMenuItem engToolStripMenuItem;
-        private ToolStripMenuItem ывToolStripMenuItem;
     }
 }
