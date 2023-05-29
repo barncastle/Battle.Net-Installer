@@ -8,29 +8,38 @@ using System.Windows.Forms;
 using BNetInstaller.Constants;
 using BNetInstaller.Endpoints;
 using System.Drawing;
-using System.Diagnostics;
-
+using Microsoft.WindowsAPICodePack.Taskbar;
+using Dark.Net;
 
 namespace BNetInstaller
 {
     public partial class Form1 : Form
     {
-        string dir;
+        string dir = "";
+        //string dir = "D:\\Games\\Diablo II Resurrected\\";
         string product = "osi";
         string uid = "osi";
         string locale = "";
         bool isRepair = false;
         Image lang_en = Properties.Resources.lang_en;
         Image lang_ru = Properties.Resources.lang_ru;
+        private TaskbarManager taskbarManager;
 
         public Form1()
         {
             InitializeComponent();
-
+            DarkNet.Instance.EffectiveCurrentProcessThemeIsDarkChanged += (_, isDarkTheme) => RenderTheme(isDarkTheme);
+            RenderTheme(DarkNet.Instance.EffectiveCurrentProcessThemeIsDark);
             this.Load += Form1_Load;
+        }
+        private void RenderTheme(bool isDarkTheme)
+        {
+            BackColor = isDarkTheme ? Color.FromArgb(60, 63, 65) : Color.White;
+            ForeColor = isDarkTheme ? Color.FromArgb(60, 63, 65) : Color.White;
         }
         private async void Form1_Load(object sender, EventArgs e)
         {
+            taskbarManager = TaskbarManager.Instance;
             string currentDirectory = Application.StartupPath;
             string dir = currentDirectory + "\\";
             // Чтение настроек
@@ -66,7 +75,6 @@ namespace BNetInstaller
             string url = "http://eu.patch.battle.net:1119/" + product + "/versions";
             string version = await GetVersionFromBuildInfo(url);
 
-
             checkbox_check_files.CheckedChanged += checkBox3_CheckedChanged; // Добавляем обработчик события
             engToolStripMenuItem.Click += engToolStripMenuItem_Click;
             ruToolStripMenuItem.Click += ruToolStripMenuItem_Click;
@@ -90,53 +98,13 @@ namespace BNetInstaller
         {
             string version = string.Empty;
 
-            try
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
+                HttpResponseMessage response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    HttpResponseMessage response = await client.GetAsync(url);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string buildInfo = await response.Content.ReadAsStringAsync();
-
-                        // Используем регулярное выражение для поиска числового значения
-                        // в строке формата "цифры.цифры.цифры" (например, "1.6.74264")
-                        Regex regex = new Regex(@"\d+\.\d+\.\d+");
-
-                        // Ищем совпадения в строке
-                        MatchCollection matches = regex.Matches(buildInfo);
-
-                        // Если найдено хотя бы одно совпадение
-                        if (matches.Count > 0)
-                        {
-                            // Получаем последнее найденное совпадение
-                            Match lastMatch = matches[matches.Count - 1];
-
-                            // Получаем значение совпадения
-                            version = lastMatch.Value;
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // Обработка возможных ошибок HTTP-запроса, чтения ответа или работы с регулярными выражениями
-                version = "Неизвестна";
-            }
-
-            return version;
-        }
-
-        private string GetLastVersionFromBuildInfo(string filePath)
-        {
-            string lastVersion = string.Empty;
-
-            try
-            {
-                if (File.Exists(filePath))
-                {
-                    string buildInfo = File.ReadAllText(filePath);
+                    string buildInfo = await response.Content.ReadAsStringAsync();
 
                     // Используем регулярное выражение для поиска числового значения
                     // в строке формата "цифры.цифры.цифры" (например, "1.6.74264")
@@ -152,19 +120,42 @@ namespace BNetInstaller
                         Match lastMatch = matches[matches.Count - 1];
 
                         // Получаем значение совпадения
-                        lastVersion = lastMatch.Value;
+                        version = lastMatch.Value;
                     }
                 }
             }
-            catch (Exception)
+
+            return version;
+        }
+
+        private string GetLastVersionFromBuildInfo(string filePath)
+        {
+            string lastVersion = string.Empty;
+
+            if (File.Exists(filePath))
             {
-                // Обработка возможных ошибок чтения файла или работы с регулярными выражениями
-                lastVersion = "Отсутствует";
+                string buildInfo = File.ReadAllText(filePath);
+
+                // Используем регулярное выражение для поиска числового значения
+                // в строке формата "цифры.цифры.цифры" (например, "1.6.74264")
+                Regex regex = new Regex(@"\d+\.\d+\.\d+");
+
+                // Ищем совпадения в строке
+                MatchCollection matches = regex.Matches(buildInfo);
+
+                // Если найдено хотя бы одно совпадение
+                if (matches.Count > 0)
+                {
+                    // Получаем последнее найденное совпадение
+                    Match lastMatch = matches[matches.Count - 1];
+
+                    // Получаем значение совпадения
+                    lastVersion = lastMatch.Value;
+                }
             }
 
             return lastVersion;
         }
-
 
         private void button_play_Click(object sender, EventArgs e)
         {
@@ -239,11 +230,6 @@ namespace BNetInstaller
             }
         }
 
-        private void toolStripStatusLabel1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void GetLang()
         {
             if (ruToolStripMenuItem.Checked)
@@ -300,10 +286,7 @@ namespace BNetInstaller
         {
 
             using AgentApp app = new();
-            //options.Sanitise();
 
-
-            //var locale = locale;
             var mode = isRepair ? Mode.Repair : Mode.Install;
 
             //Console.WriteLine("Authenticating");
@@ -390,18 +373,16 @@ namespace BNetInstaller
 
         async Task<bool> ProgressLoop(ProductEndpoint endpoint)
         {
-            static void Print(string label, object value) =>
-                Console.WriteLine("{0,-20}{1,-20}", label, value);
 
             while (true)
             {
                 var stats = await endpoint.Get();
-
+                await Task.Delay(250);
                 // check for completion
                 var complete = stats.Value<bool?>("download_complete");
                 if (complete == true)
                 {
-                    afterUpdateFunctions(); // Выполнение функции после завершения обновления
+                    await afterUpdateFunctions(); // Выполнение функции после завершения обновления
                     return true;
                 }
 
@@ -411,8 +392,10 @@ namespace BNetInstaller
 
                 if (!progress.HasValue)
                     return false;
+                int progressValue = (int)Math.Round(progress.Value * 100);
                 progressbar.Visible = true;
-                progressbar.Value = ((int)Math.Round(progress.Value * 100));
+                progressbar.Value = progressValue;
+                taskbarManager.SetProgressValue(progressValue, 100);
                 button_update.Enabled = false;
                 button_play.Enabled = false;
                 checkbox_check_files.Enabled = false;
@@ -422,44 +405,42 @@ namespace BNetInstaller
                 //Print("Language:", locale);
                 //Print("Directory:", options.Directory);
                 //Print("Progress:", progress.Value.ToString("P4"));
-                playable.GetValueOrDefault();
+                complete.GetValueOrDefault();
                 await Task.Delay(2000);
 
                 // exit @ 100%
                 if (progress == 1f)
                 {
-                    afterUpdateFunctions(); // Выполнение функции после завершения обновления
+                    await afterUpdateFunctions(); // Выполнение функции после завершения обновления
                     return true;
                 }
 
             }
         }
 
-
-
         private void checkbox_check_files_CheckedChanged(object sender, EventArgs e)
         {
             isRepair = checkbox_check_files.Checked;
         }
 
-        private async void afterUpdateFunctions()
+        private async Task afterUpdateFunctions()
         {
             progressbar.Visible = false;
+            taskbarManager.SetProgressState(TaskbarProgressBarState.NoProgress);
             statusLabel.Text = "Готово";
             button_update.Enabled = false;
             button_play.Enabled = true;
             checkbox_check_files.Enabled = true;
             checkbox_check_files.Checked = false;
+            toolStripSplitButton1.Enabled = true;
 
             // Обновление lastVersion и version
-            string filePath = dir + ".build.info";
-            string lastVersion = GetLastVersionFromBuildInfo(filePath);
             string url = "http://eu.patch.battle.net:1119/" + product + "/versions";
             string version = await GetVersionFromBuildInfo(url);
-            label_current_version.Text = lastVersion;
             label_actual_version.Text = version;
-            toolStripSplitButton1.Enabled = true;
+            string filePath = dir + ".build.info";
+            string lastVersion = GetLastVersionFromBuildInfo(filePath);
+            label_current_version.Text = lastVersion;
         }
-
     }
 }

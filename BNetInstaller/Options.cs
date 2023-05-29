@@ -22,20 +22,20 @@ internal class Options
     //[Option("repair", HelpText = "Run installation repair")]
     public bool Repair { get; set; }
 
-    public void Sanitise()
-    {
-        // ensure a UID exists
-        if (string.IsNullOrWhiteSpace(UID))
-            UID = Product;
+    //public void Sanitise()
+    //{
+    //    // ensure a UID exists
+    //    if (string.IsNullOrWhiteSpace(UID))
+    //        UID = Product;
 
-        // remove _locale suffix for wiki copy-pasters
-        if (UID.Contains("_locale", StringComparison.OrdinalIgnoreCase))
-            UID = Regex.Replace(UID, "\\(?_locale\\)?", $"_{Locale}", RegexOptions.IgnoreCase);
+    //    // remove _locale suffix for wiki copy-pasters
+    //    if (UID.Contains("_locale", StringComparison.OrdinalIgnoreCase))
+    //        UID = Regex.Replace(UID, "\\(?_locale\\)?", $"_{Locale}", RegexOptions.IgnoreCase);
 
-        Product = Product.ToLowerInvariant().Trim();
-        UID = UID.ToLowerInvariant().Trim();
-        Directory = Directory.Replace("/", "\\").Trim().TrimEnd('\\') + '\\';
-    }
+    //    Product = Product.ToLowerInvariant().Trim();
+    //    UID = UID.ToLowerInvariant().Trim();
+    //    Directory = Directory.Replace("/", "\\").Trim().TrimEnd('\\') + '\\';
+    //}
 
     public static string[] Generate()
     {
