@@ -10,7 +10,7 @@ internal sealed class InstallEndpoint : BaseProductEndpoint<InstallModel>
     {
         var agentError = response["error"]?.GetValue<float?>();
 
-        if (agentError <= 0)
+        if (agentError.GetValueOrDefault() <= 0)
             return;
 
         // try to identify the erroneous section
