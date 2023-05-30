@@ -29,7 +29,7 @@ internal sealed class AgentClient : IDisposable
     {
         var request = new HttpRequestMessage(method, endpoint);
 
-        if (method != HttpMethod.Get && !string.IsNullOrEmpty(content))
+        if (!string.IsNullOrEmpty(content))
             request.Content = new StringContent(content);
 
         var response = await _client.SendAsync(request);
