@@ -28,7 +28,7 @@ internal sealed class AgentApp : IDisposable
 
         if (!StartProcess(out var process))
         {
-            Console.WriteLine("Please ensure Battle.net is installed and has recently been opened.");
+            Console.WriteLine("Please ensure Battle.net is installed and has recently been signed in to.");
             Environment.Exit(0);
         }
 

@@ -74,14 +74,18 @@ file class SnakeCaseNamingPolicy : JsonNamingPolicy
         Span<char> input = stackalloc char[0x100];
         Span<char> output = stackalloc char[0x100];
 
+        // lowercase the name
         var inputLen = name.AsSpan().ToLowerInvariant(input);
         var outputLen = 0;
 
         for (var i = 0; i < inputLen; i++)
         {
+            // prefix an underscore before any capitals
+            // excluding the initial character
             if (name[i] is >= 'A' and <= 'Z' && i != 0)
                 output[outputLen++] = '_';
 
+            // write the lowercase character to the output
             output[outputLen++] = input[i];
         }
 
