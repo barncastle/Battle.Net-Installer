@@ -1,44 +1,36 @@
-# Battle.Net Installer
+<p align="center"><img src="logo.png" alt="D4Launcher logo"/></p>
+# D4Launcher
+[![Badge_Download]][Download_GitHub]
 
-A tool for installing, updating and repairing games via Blizzard's Battle.net application. This tool can either be run directly or via command line using the below arguments.
+<b>D4Launcher</b> это программа для владельцев Diablo IV из России и Беларуси, что каким-либо образом получили игру на свой аккаунт.<br>
+Позволяет устанавливать, обновлять и чинить (проверкой файлов) и запускать игру с комфортом.<br>
+Программа является форком [Battle.Net Installer](https://github.com/barncastle/Battle.Net-Installer) с реализацией простого доступа к функционалу путем графического интерфейса.
 
-Windows only. See [releases](https://github.com/barncastle/Battle.Net-Installer/releases) for a compiled binary.
-
-#### Project Prerequisites
+#### Требования
+- Минимум Windows 10 1909, или новее.
 - [.NET 6.0](https://dotnet.microsoft.com/download/dotnet)
-- [Battle.net](https://www.blizzard.com/en-us/apps/battle.net/desktop) must be installed, up to date and have been recently signed in to.
+- [Battle.net](https://www.blizzard.com/en-us/apps/battle.net/desktop) должен быть установлен, обновлен, и вы должны быть авторизованны.
 
-#### Arguments
-| Argument | Description |
-| ------- | :---- |
-| --prod | TACT Product **(Required)** |
-| --lang | Game/Asset language **(Required)** |
-| --dir | Installation Directory **(Required)** |
-| --uid | Agent UID (Required if different to the TACT Product) |
-| --repair | Repairs the installation opposed to installing/updating it |
-| --help | Shows this table |
+### Инструкция
+- Скачиваем программу, ложим её в папку, где будет (или лежит) ваша Diablo IV.
+- Запускаем программу и, выбрав язык, жмем <b>Установить</b> (или <b>Обновить</b>). Если игра не установлена или требует обновления. Не забываем сначала включить Battle.Net.
+- Первый запуск игры просто жмем <b>Играть</b>, при её нажатии запускается `Diablo IV.exe` с параметром `-launch`.
+- После первой авторизации в игре тыкаем <b>Запомнить пароль</b> и жмем <b>Играть</b>, в таком случае запускается `Diablo IV.exe` с параметром `-launch -sso`.
+- Если у программы D4Launcher вышло обновление, в статусной строке внизу будет написано об этом, советуется всегда обновлять программу дабы иметь лучший опыт в её использовании.
 
-- All TACT Products and Agent UIDs can be found [here](https://wowdev.wiki/TACT#Products) however only (green) Active products will work.  
-- Languages are listed [here](BNetInstaller/Constants/Locale.cs), availability will vary between products.
-- If the target directory already contains the provided TACT Product, and an update is available, the product will be updated.
+### Важная инфа
+Прошу учесть вас, что я не программист ни разу, просто "тут и сям" самоучка.<br>
+В адаптации кода оригинальной программы для использования с гарфическим интерфейсом мне помогал мой друг [Bachar](https://github.com/Bachar-official).
+Разобраться с тем как что делать вообще мне немного помогал мне ChatGPT (через страдания).<br>
+Если вы встретили проблемы при работе с программой - создайте [Issue](https://github.com/EvilToasterDBU/D4-Launcher/issues/new/choose) и расскажите там подробнее о проблеме.<br>
+Если вы хотите поблагодарить меня за программу вы можете сделать это по ссылакам через [Qiwi](https://donate.qiwi.com/payin/EvilToasterDBU) и [Boosty](https://boosty.to/eviltoaster/donate).
 
-#### Command Line Usage
+### Известные проблемы
+- Выбор языка сейчас в бета режиме, т.к. я не до конца прощупал как оно работает. Возможно в будущем уберу его или наоборот доработаю функцию.
+<!----------------------------------------------------------------------------->
 
-Example for StarCraft 2, which has a TACT Product of `s2` and an Agent UID of `s2(_locale)`:  
+[Download_GitHub]: https://github.com/EvilToasterDBU/D4Launcher/releases/latest/download/D4Launcher.zip
 
-`.\bnetinstaller.exe --prod s2 --uid s2_enus --lang enus --dir "C:\Test"`
+<!---------------------------------{ Badges }---------------------------------->
 
-#### Error Messages and Codes
-
-Since this tool interacts directly with the Battle.net agent there are no human-readable errors just error codes. This tool does it's best to indicate the potential problem and displays the full exception when it occurs. Additional details can be found in the agent log files which are located within the `%programdata%\Battle.net\Agent\Agent.xxxx` directories.
-
- Some known and common errors can be found below:
-
-- "Unable to find Agent.exe", the Battle.net app is not installed on your system.
-- "Unable to start Agent.exe", the app cannot start the Battle.net agent as Battle.net is either missing or not setup. 
-- "Unable to authenticate", the Battle.net app is not signed in to and therefore cannot install games.
-- "Unable to install", your computer doesn't meet the minimum specs and/or space requirements.
-- "2221", the supplied TACT Product is unavailable or invalid.
-- "2421", your computer doesn't meet the minimum specs and/or space requirements.
-- "3001", the supplied TACT Product requires an encryption key which is missing.
-
+[Badge_Download]: https://img.shields.io/github/downloads/EvilToasterDBU/D4Launcher/total?color=green&label=Скачать&logo=windows&style=for-the-badge

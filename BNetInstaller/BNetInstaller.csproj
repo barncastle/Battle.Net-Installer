@@ -12,7 +12,7 @@
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
         <IncludeSymbols>False</IncludeSymbols>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
-        <AssemblyName>D4 Launcher</AssemblyName>
+        <AssemblyName>D4Launcher</AssemblyName>
         <Company></Company>
     </PropertyGroup>
 

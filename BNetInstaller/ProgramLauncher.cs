@@ -7,7 +7,7 @@ namespace BNetInstaller
 {
     internal static class ProgramLauncher
     {
-        static Mutex mutex = new Mutex(true, "D4 Launcher");
+        static Mutex mutex = new Mutex(true, "D4Launcher");
         [STAThread]
         static void Main()
         {
@@ -28,7 +28,7 @@ namespace BNetInstaller
             }
             else
             {
-                MessageBox.Show("D4 Launcher уже запущен");
+                MessageBox.Show("D4Launcher уже запущен");
             }
 
         }

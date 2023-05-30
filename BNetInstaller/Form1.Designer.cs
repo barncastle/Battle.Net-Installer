@@ -215,7 +215,7 @@ namespace BNetInstaller
             MinimizeBox = false;
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "D4 Launcher";
+            Text = "D4Launcher";
             Load += Form1_Load;
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();

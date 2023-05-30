@@ -10,11 +10,14 @@ using BNetInstaller.Endpoints;
 using System.Drawing;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using Dark.Net;
+using System.Text.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BNetInstaller
 {
     public partial class Form1 : Form
     {
+
         string product = "fenris";
         string uid = "fenris";
         string locale = "";
@@ -37,6 +40,14 @@ namespace BNetInstaller
         }
         private async void Form1_Load(object sender, EventArgs e)
         {
+            string repositoryOwner = "EvilToasterDBU";
+            string repositoryName = "D4Launcher";
+            string currentVersion = "1.0.0"; // Замените на текущую версию вашего приложения
+            this.Text = repositoryName + " " + currentVersion;
+
+
+            await GetLatestVersionFromGitHub(repositoryOwner, repositoryName, currentVersion);
+
             taskbarManager = TaskbarManager.Instance;
             // Чтение настроек
             bool isRussianSelected = Properties.Settings.Default.IsRussianSelected;
@@ -466,5 +477,58 @@ namespace BNetInstaller
             string lastVersion = GetLastVersionFromBuildInfo(filePath);
             label_current_version.Text = lastVersion;
         }
+
+        // Класс для десериализации информации о релизе из GitHub API
+        public class GitHubRelease
+        {
+            public string TagName { get; set; }
+            // Дополнительные поля, если необходимо
+        }
+
+        private async Task<string> GetLatestVersionFromGitHub(string repositoryOwner, string repositoryName, string currentVersion)
+        {
+            string latestVersion = "отсутствует";
+
+            try
+            {
+                string apiUrl = $"https://api.github.com/repos/{repositoryOwner}/{repositoryName}/releases/latest";
+
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)");
+
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string jsonResponse = await response.Content.ReadAsStringAsync();
+                        JObject releaseInfo = JObject.Parse(jsonResponse);
+
+                        // Извлечение значения поля "tag_name" из JSON-ответа
+                        string tagName = releaseInfo["tag_name"].ToString();
+
+                        if (tagName != null && tagName != currentVersion)
+                        {
+                            latestVersion = tagName;
+
+                            // Проверка текущей версии
+                            if (currentVersion.CompareTo(latestVersion) < 0)
+                            {
+                                // Вывод текста в statusLabel.Text
+                                statusLabel.Text = "Вышло обновление D4 Launcher " + latestVersion;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Обработка ошибки запроса URL
+                latestVersion = "отсутствует";
+            }
+
+            return latestVersion;
+        }
+
     }
 }
