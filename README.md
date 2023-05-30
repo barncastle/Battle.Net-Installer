@@ -1,5 +1,7 @@
 <p align="center"><img src="logo.png" alt="D4Launcher logo"/></p>
+
 # D4Launcher
+
 [![Badge_Download]][Download_GitHub]
 
 <b>D4Launcher</b> это программа для владельцев Diablo IV из России и Беларуси, что каким-либо образом получили игру на свой аккаунт.<br>
