@@ -20,9 +20,9 @@ internal sealed class AgentClient : IDisposable
         };
     }
 
-    public void SetAuthorization(string authorization)
+    public void SetAuthToken(string token)
     {
-        _client.DefaultRequestHeaders.Add("Authorization", authorization);
+        _client.DefaultRequestHeaders.Add("Authorization", token);
     }
 
     public async Task<HttpResponseMessage> SendAsync(string endpoint, HttpMethod method, string content = null)

@@ -9,7 +9,7 @@ internal sealed partial class Options
     [Option("prod", Required = true, HelpText = "TACT Product")]
     public string Product { get; set; }
 
-    [Option("lang", Required = true, HelpText = "Game/Asset language")]
+    [Option("lang", Required = true, HelpText = "Game/Asset Language")]
     public Locale Locale { get; set; }
 
     [Option("dir", Required = true, HelpText = "Installation Directory")]
@@ -18,7 +18,7 @@ internal sealed partial class Options
     [Option("uid", HelpText = "Agent Product UID (Required if different to the TACT product)")]
     public string UID { get; set; }
 
-    [Option("repair", HelpText = "Run installation repair")]
+    [Option("repair", HelpText = "Repair Product Installation")]
     public bool Repair { get; set; }
 
     public void Sanitise()
