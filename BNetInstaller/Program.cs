@@ -1,4 +1,5 @@
-﻿using BNetInstaller.Constants;
+﻿using System.Diagnostics;
+using BNetInstaller.Constants;
 using BNetInstaller.Endpoints;
 using CommandLine;
 
@@ -57,13 +58,16 @@ internal static class Program
         };
 
         // process the task
-        await operation;
+        var complete = await operation;
 
         // send close signal
         await app.AgentEndpoint.Delete();
+
+        // run the post download script if applicable
+        RunPostDownloadScript(options, complete);
     }
 
-    private static async Task InstallProduct(Options options, AgentApp app)
+    private static async Task<bool> InstallProduct(Options options, AgentApp app)
     {
         // initiate download
         app.UpdateEndpoint.Model.Uid = options.UID;
@@ -71,17 +75,18 @@ internal static class Program
 
         // first try install endpoint
         if (await ProgressLoop(options, app.InstallEndpoint.Product))
-            return;
+            return true;
 
         // then try the update endpoint instead
         if (await ProgressLoop(options, app.UpdateEndpoint.Product))
-            return;
+            return true;
 
         // failing that another agent or the BNet app has probably taken control of the install
         Console.WriteLine("Another application has taken over. Launch the Battle.Net app to resume installation.");
+        return false;
     }
 
-    private static async Task RepairProduct(Options options, AgentApp app)
+    private static async Task<bool> RepairProduct(Options options, AgentApp app)
     {
         // initiate repair
         app.RepairEndpoint.Model.Uid = options.UID;
@@ -89,16 +94,19 @@ internal static class Program
 
         // run the repair endpoint
         if (await ProgressLoop(options, app.RepairEndpoint.Product))
-            return;
+            return true;
 
         Console.WriteLine("Unable to repair this product.");
+        return false;
     }
 
     private static async Task<bool> ProgressLoop(Options options, ProductEndpoint endpoint)
     {
         var locale = options.Locale.ToString();
-        var cursorLeft = Console.CursorLeft;
-        var cursorTop = Console.CursorTop;
+        var cursor = (Left: 0, Top: 0);
+
+        if (options.ConsoleEnvironment)
+            cursor = Console.GetCursorPosition();
 
         static void Print(string label, object value) =>
             Console.WriteLine("{0,-20}{1,-20}", label, value);
@@ -109,6 +117,7 @@ internal static class Program
 
             // check for completion
             var complete = stats["download_complete"]?.GetValue<bool?>();
+
             if (complete == true)
                 return true;
 
@@ -119,17 +128,35 @@ internal static class Program
             if (!progress.HasValue)
                 return false;
 
-            Console.SetCursorPosition(cursorLeft, cursorTop);
-            Print("Downloading:", options.Product);
-            Print("Language:", locale);
-            Print("Directory:", options.Directory);
-            Print("Progress:", progress.Value.ToString("P4"));
-            Print("Playable:", playable.GetValueOrDefault());
+            // some non-console environments don't support
+            // cursor positioning or line rewriting
+            if (options.ConsoleEnvironment)
+            {
+                Console.SetCursorPosition(cursor.Left, cursor.Top);
+                Print("Downloading:", options.Product);
+                Print("Language:", locale);
+                Print("Directory:", options.Directory);
+                Print("Progress:", progress.Value.ToString("P4"));
+                Print("Playable:", playable.GetValueOrDefault());
+            }
+            else
+            {
+                Print("Progress:", progress.Value.ToString("P4"));
+            }
+
             await Task.Delay(2000);
 
             // exit @ 100%
             if (progress == 1f)
                 return true;
         }
+    }
+
+    private static void RunPostDownloadScript(Options options, bool complete)
+    {
+        if (!complete || !File.Exists(options.PostDownloadScript))
+            return;
+
+        Process.Start(options.PostDownloadScript);
     }
 }

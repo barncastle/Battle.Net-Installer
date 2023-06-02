@@ -21,6 +21,12 @@ internal sealed partial class Options
     [Option("repair", HelpText = "Repair Product Installation")]
     public bool Repair { get; set; }
 
+    [Option("console-env", Hidden = true)]
+    public bool ConsoleEnvironment { get; set; } = true;
+
+    [Option("post-download-script", Hidden = true)]
+    public string PostDownloadScript { get; set; }
+
     public void Sanitise()
     {
         // ensure a UID exists
