@@ -18,13 +18,13 @@ internal sealed class AgentApp : IDisposable
     public readonly RepairEndpoint RepairEndpoint;
     public readonly VersionEndpoint VersionEndpoint;
 
-    private readonly string AgentPath;
-    private readonly Process Process;
-    private readonly AgentClient Client;
+    private readonly string _agentPath;
+    private readonly Process _process;
+    private readonly AgentClient _client;
 
     public AgentApp()
     {
-        AgentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Battle.net", "Agent", "Agent.exe");
+        _agentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Battle.net", "Agent", "Agent.exe");
 
         if (!StartProcess(out var process))
         {
@@ -32,19 +32,19 @@ internal sealed class AgentApp : IDisposable
             Environment.Exit(0);
         }
 
-        Process = process;
-        Client = new(Port);
+        _process = process;
+        _client = new(Port);
 
-        AgentEndpoint = new(Client);
-        InstallEndpoint = new(Client);
-        UpdateEndpoint = new(Client);
-        RepairEndpoint = new(Client);
-        VersionEndpoint = new(Client);
+        AgentEndpoint = new(_client);
+        InstallEndpoint = new(_client);
+        UpdateEndpoint = new(_client);
+        RepairEndpoint = new(_client);
+        VersionEndpoint = new(_client);
     }
 
     private bool StartProcess(out Process process)
     {
-        if (!File.Exists(AgentPath))
+        if (!File.Exists(_agentPath))
         {
             process= null;
             Console.WriteLine("Unable to find Agent.exe.");
@@ -53,7 +53,7 @@ internal sealed class AgentApp : IDisposable
 
         try
         {
-            process = Process.Start(AgentPath, $"--port={Port}");
+            process = Process.Start(_agentPath, $"--port={Port}");
             return true;
         }
         catch (Win32Exception)
@@ -66,10 +66,10 @@ internal sealed class AgentApp : IDisposable
 
     public void Dispose()
     {
-        if (Process?.HasExited == false)
-            Process.Kill();
+        if (_process?.HasExited == false)
+            _process.Kill();
 
-        Client?.Dispose();
-        Process?.Dispose();
+        _client?.Dispose();
+        _process?.Dispose();
     }
 }
