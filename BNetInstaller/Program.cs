@@ -154,9 +154,7 @@ internal static class Program
 
     private static void RunPostDownloadScript(Options options, bool complete)
     {
-        if (!complete || !File.Exists(options.PostDownloadScript))
-            return;
-
+        if (complete && File.Exists(options.PostDownloadScript))
         Process.Start(options.PostDownloadScript);
     }
 }
