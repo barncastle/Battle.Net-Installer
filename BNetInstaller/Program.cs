@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using BNetInstaller.Constants;
-using BNetInstaller.Endpoints;
+using BNetInstaller.Operations;
 using CommandLine;
 
 namespace BNetInstaller;
@@ -50,10 +50,10 @@ internal static class Program
 
         Console.WriteLine();
 
-        var operation = mode switch
+        AgentTask<bool> operation = mode switch
         {
-            Mode.Install => InstallProduct(options, app),
-            Mode.Repair => RepairProduct(options, app),
+            Mode.Install => new InstallProductTask(options, app),
+            Mode.Repair => new RepairProductTask(options, app),
             _ => throw new NotSupportedException(),
         };
 
@@ -67,94 +67,9 @@ internal static class Program
         RunPostDownloadScript(options, complete);
     }
 
-    private static async Task<bool> InstallProduct(Options options, AgentApp app)
-    {
-        // initiate download
-        app.UpdateEndpoint.Model.Uid = options.UID;
-        await app.UpdateEndpoint.Post();
-
-        // first try install endpoint
-        if (await ProgressLoop(options, app.InstallEndpoint.Product))
-            return true;
-
-        // then try the update endpoint instead
-        if (await ProgressLoop(options, app.UpdateEndpoint.Product))
-            return true;
-
-        // failing that another agent or the BNet app has probably taken control of the install
-        Console.WriteLine("Another application has taken over. Launch the Battle.Net app to resume installation.");
-        return false;
-    }
-
-    private static async Task<bool> RepairProduct(Options options, AgentApp app)
-    {
-        // initiate repair
-        app.RepairEndpoint.Model.Uid = options.UID;
-        await app.RepairEndpoint.Post();
-
-        // run the repair endpoint
-        if (await ProgressLoop(options, app.RepairEndpoint.Product))
-            return true;
-
-        Console.WriteLine("Unable to repair this product.");
-        return false;
-    }
-
-    private static async Task<bool> ProgressLoop(Options options, ProductEndpoint endpoint)
-    {
-        var locale = options.Locale.ToString();
-        var cursor = (Left: 0, Top: 0);
-
-        if (options.ConsoleEnvironment)
-            cursor = Console.GetCursorPosition();
-
-        static void Print(string label, object value) =>
-            Console.WriteLine("{0,-20}{1,-20}", label, value);
-
-        while (true)
-        {
-            var stats = await endpoint.Get();
-
-            // check for completion
-            var complete = stats["download_complete"]?.GetValue<bool?>();
-
-            if (complete == true)
-                return true;
-
-            // get progress percentage and playability
-            var progress = stats["progress"]?.GetValue<float?>();
-            var playable = stats["playable"]?.GetValue<bool?>();
-
-            if (!progress.HasValue)
-                return false;
-
-            // some non-console environments don't support
-            // cursor positioning or line rewriting
-            if (options.ConsoleEnvironment)
-            {
-                Console.SetCursorPosition(cursor.Left, cursor.Top);
-                Print("Downloading:", options.Product);
-                Print("Language:", locale);
-                Print("Directory:", options.Directory);
-                Print("Progress:", progress.Value.ToString("P4"));
-                Print("Playable:", playable.GetValueOrDefault());
-            }
-            else
-            {
-                Print("Progress:", progress.Value.ToString("P4"));
-            }
-
-            await Task.Delay(2000);
-
-            // exit @ 100%
-            if (progress == 1f)
-                return true;
-        }
-    }
-
     private static void RunPostDownloadScript(Options options, bool complete)
     {
         if (complete && File.Exists(options.PostDownloadScript))
-        Process.Start(options.PostDownloadScript);
+            Process.Start(options.PostDownloadScript);
     }
 }
