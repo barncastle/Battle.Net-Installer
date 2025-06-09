@@ -1,11 +1,7 @@
 ﻿namespace BNetInstaller.Endpoints.Agent;
 
-internal sealed class AgentEndpoint : BaseEndpoint<NullModel>
+internal sealed class AgentEndpoint(AgentClient client) : BaseEndpoint<NullModel>("agent", client)
 {
-    public AgentEndpoint(AgentClient client) : base("agent", client)
-    {
-    }
-
     protected override void ValidateResponse(JsonNode response, string content)
     {
         base.ValidateResponse(response, content);

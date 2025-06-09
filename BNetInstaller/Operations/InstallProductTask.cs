@@ -1,15 +1,9 @@
 ﻿namespace BNetInstaller.Operations;
 
-internal sealed class InstallProductTask : AgentTask<bool>
+internal sealed class InstallProductTask(Options options, AgentApp app) : AgentTask<bool>(options)
 {
-    private readonly Options _options;
-    private readonly AgentApp _app;
-
-    public InstallProductTask(Options options, AgentApp app) : base(options)
-    {
-        _options = options;
-        _app = app;
-    }
+    private readonly Options _options = options;
+    private readonly AgentApp _app = app;
 
     protected override async Task<bool> InnerTask()
     {

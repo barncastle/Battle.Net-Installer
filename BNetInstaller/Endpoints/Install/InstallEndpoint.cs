@@ -1,11 +1,7 @@
 ﻿namespace BNetInstaller.Endpoints.Install;
 
-internal sealed class InstallEndpoint : BaseProductEndpoint<InstallModel>
+internal sealed class InstallEndpoint(AgentClient client) : BaseProductEndpoint<InstallModel>("install", client)
 {
-    public InstallEndpoint(AgentClient client) : base("install", client)
-    {
-    }
-
     protected override void ValidateResponse(JsonNode response, string content)
     {
         var agentError = response["error"]?.GetValue<float?>();

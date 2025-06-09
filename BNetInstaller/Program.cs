@@ -35,7 +35,7 @@ internal static class Program
         await app.AgentEndpoint.Get();
 
         Console.WriteLine($"Queuing {mode}");
-        app.InstallEndpoint.Model.InstructionsDataset = new[] { "torrent", "win", options.Product, locale.ToLowerInvariant() };
+        app.InstallEndpoint.Model.InstructionsDataset = ["torrent", "win", options.Product, locale.ToLowerInvariant()];
         app.InstallEndpoint.Model.InstructionsPatchUrl = $"http://us.patch.battle.net:1119/{options.Product}";
         app.InstallEndpoint.Model.Uid = options.UID;
         await app.InstallEndpoint.Post();

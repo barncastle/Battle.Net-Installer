@@ -1,11 +1,7 @@
 ﻿namespace BNetInstaller.Endpoints;
 
-internal sealed class ProductEndpoint : BaseEndpoint<ProductModel>
+internal sealed class ProductEndpoint(string endpoint, AgentClient client) : BaseEndpoint<ProductModel>(endpoint, client)
 {
-    public ProductEndpoint(string endpoint, AgentClient client) : base(endpoint, client)
-    {
-    }
-
     public static ProductEndpoint CreateFromResponse(JsonNode content, AgentClient client)
     {
         var responseURI = content["response_uri"]?.GetValue<string>();

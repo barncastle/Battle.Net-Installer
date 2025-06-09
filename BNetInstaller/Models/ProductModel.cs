@@ -6,7 +6,7 @@ internal sealed class ProductModel : IModel
     public bool Finalized { get; set; } = true;
     public string GameDir { get; set; }
     public string GeoIpCountry { get; set; } = "US";
-    public string[] Language { get; set; } = new[] { "enus" };
+    public string[] Language { get; set; } = ["enus"];
     public string SelectedAssetLocale { get; set; } = "enus";
     public string SelectedLocale { get; set; } = "enus";
     public string Shortcut { get; set; } = "all";

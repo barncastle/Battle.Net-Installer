@@ -1,11 +1,7 @@
 ﻿namespace BNetInstaller.Endpoints.Version;
 
-internal sealed class VersionEndpoint : BaseEndpoint<UidModel>
+internal sealed class VersionEndpoint(AgentClient client) : BaseEndpoint<UidModel>("version", client)
 {
-    public VersionEndpoint(AgentClient client) : base("version", client)
-    {
-    }
-
     public override async Task<JsonNode> Get()
     {
         using var response = await Client.SendAsync(Endpoint + "/" + Model.Uid, HttpMethod.Get);

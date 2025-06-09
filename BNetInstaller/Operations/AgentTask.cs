@@ -3,15 +3,10 @@ using BNetInstaller.Endpoints;
 
 namespace BNetInstaller.Operations;
 
-internal abstract class AgentTask<T>
+internal abstract class AgentTask<T>(Options options)
 {
-    private readonly Options _options;
+    private readonly Options _options = options;
     private TaskAwaiter<T>? _awaiter;
-
-    public AgentTask(Options options)
-    {
-        _options = options;
-    }
 
     public TaskAwaiter<T> GetAwaiter() => _awaiter ??= InnerTask().GetAwaiter();
 

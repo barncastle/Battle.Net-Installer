@@ -1,12 +1,8 @@
 ﻿namespace BNetInstaller.Endpoints;
 
-internal abstract class BaseProductEndpoint<T> : BaseEndpoint<T> where T : class, IModel, new()
+internal abstract class BaseProductEndpoint<T>(string endpoint, AgentClient client) : BaseEndpoint<T>(endpoint, client) where T : class, IModel, new()
 {
     public ProductEndpoint Product { get; private set; }
-
-    protected BaseProductEndpoint(string endpoint, AgentClient client) : base(endpoint, client)
-    {
-    }
 
     public override async Task<JsonNode> Post()
     {

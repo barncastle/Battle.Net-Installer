@@ -1,18 +1,11 @@
 ﻿namespace BNetInstaller.Endpoints;
 
-internal abstract class BaseEndpoint<T> where T : class, IModel, new()
+internal abstract class BaseEndpoint<T>(string endpoint, AgentClient client) where T : class, IModel, new()
 {
-    public string Endpoint { get; }
-    public T Model { get; }
+    public string Endpoint { get; } = endpoint;
+    public T Model { get; } = new();
 
-    protected AgentClient Client { get; }
-
-    protected BaseEndpoint(string endpoint, AgentClient client)
-    {
-        Endpoint = endpoint;
-        Client = client;
-        Model = new();
-    }
+    protected AgentClient Client { get; } = client;
 
     public virtual async Task<JsonNode> Get()
     {
