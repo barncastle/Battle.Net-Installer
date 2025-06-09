@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using BNetInstaller.Constants;
 using BNetInstaller.Operations;
 using CommandLine;
 
@@ -72,4 +71,10 @@ internal static class Program
         if (complete && File.Exists(options.PostDownloadScript))
             Process.Start(options.PostDownloadScript);
     }
+}
+
+file enum Mode
+{
+    Install,
+    Repair
 }

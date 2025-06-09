@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using BNetInstaller.Constants;
 using CommandLine;
 
 namespace BNetInstaller;
@@ -76,4 +75,20 @@ internal sealed partial class Options
 
     [GeneratedRegex("\\(?_locale\\)?", RegexOptions.IgnoreCase, "en-GB")]
     private static partial Regex LocaleSuffixRegex();
+}
+
+internal enum Locale
+{
+    deDE,
+    enUS,
+    esMX,
+    ptBR,
+    esES,
+    frFR,
+    itIT,
+    koKR,
+    plPL,
+    ruRU,
+    zhCN,
+    zhTW
 }
