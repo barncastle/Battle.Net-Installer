@@ -21,12 +21,12 @@ internal static partial class NativeMethods
         var buffer = Marshal.AllocHGlobal(size);
         var pBuffer = buffer;
 
-        // read MIB_TCPTABLE2
-        if (GetTcpTable(pBuffer, ref size, false) != 0)
-            return -1;
-
         try
         {
+            // read MIB_TCPTABLE2
+            if (GetTcpTable(pBuffer, ref size, false) != 0)
+                return -1;
+
             var dwNumEntries = Marshal.ReadInt32(pBuffer); // MIB_TCPTABLE2->dwNumEntries
             pBuffer += sizeof(int);
 
