@@ -78,7 +78,7 @@ internal static class OptionsBinder
         static string GetInput(string message)
         {
             Console.Write(message);
-            return Console.ReadLine().Trim().Trim('"');
+            return Console.ReadLine()?.Trim().Trim('"');
         }
 
         Console.WriteLine("Please complete the following information:");

@@ -58,13 +58,13 @@ internal sealed class AgentApp : IDisposable
             });
 
             // detect listening port
-            while (!process.HasExited && port == -1)
+            while (process is { HasExited: false } && port == -1)
             {
                 Thread.Sleep(250);
                 port = NativeMethods.GetProcessListeningPort(process.Id);
             }
 
-            if (process.HasExited || port == -1)
+            if (process is not { HasExited: false } || port == -1)
             {
                 Console.WriteLine("Unable to connect to Agent.exe.");
                 return false;

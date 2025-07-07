@@ -35,7 +35,7 @@ internal sealed class AgentClient : IDisposable
         var response = await _client.SendAsync(request);
 
         if (!response.IsSuccessStatusCode)
-            await HandleRequestFailure(response);
+            await HandleRequestFailure(response, endpoint);
 
         return response;
     }
@@ -48,12 +48,11 @@ internal sealed class AgentClient : IDisposable
             return await SendAsync(endpoint, method, JsonSerializer.Serialize(payload, _serializerOptions));
     }
 
-    private static async Task HandleRequestFailure(HttpResponseMessage response)
+    private static async Task HandleRequestFailure(HttpResponseMessage response, string endpoint)
     {
-        var uri = response.RequestMessage.RequestUri.AbsolutePath;
         var statusCode = response.StatusCode;
         var content = await response.Content.ReadAsStringAsync();
-        Debug.WriteLine($"{(int)statusCode} {statusCode}: {uri} {content}");
+        Debug.WriteLine($"{(int)statusCode} {statusCode}: {endpoint} {content}");
     }
 
     public void Dispose()
