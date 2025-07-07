@@ -10,8 +10,8 @@ internal sealed partial class Options
     public string Directory { get; set; }
     public string UID { get; set; }
     public bool Repair { get; set; }
-    public bool ConsoleEnvironment { get; set; }
-    public string PostDownloadScript { get; set; }
+    public bool Verbose { get; set; }
+    public string PostDownload { get; set; }
 
     public void Sanitise()
     {
@@ -63,14 +63,15 @@ internal static class OptionsBinder
         HelpName = "Run installation repair"
     };
 
-    private static readonly Option<bool?> ConsoleEnvironment = new("--console-env")
+    private static readonly Option<bool> Verbose = new("--verbose")
     {
-        Hidden = true
+        HelpName = "Enables/disables verbose progress reporting",
+        DefaultValueFactory = (_) => true
     };
 
-    private static readonly Option<string> PostDownloadScript = new("--post-download-script")
+    private static readonly Option<string> PostDownload = new("--post-download")
     {
-        Hidden = true
+        HelpName = "Specifies a file or app to run on completion"
     };
 
     public static string[] CreateArgs()
@@ -113,7 +114,9 @@ internal static class OptionsBinder
             Locale,
             Directory,
             UID,
-            Repair
+            Repair,
+            Verbose,
+            PostDownload
         };
 
         rootCommand.SetAction(async context =>
@@ -125,8 +128,8 @@ internal static class OptionsBinder
                 Directory = context.CommandResult.GetValue(Directory),
                 UID = context.CommandResult.GetValue(UID),
                 Repair = context.CommandResult.GetValue(Repair),
-                ConsoleEnvironment = context.CommandResult.GetValue(ConsoleEnvironment) ?? true, // https://github.com/dotnet/command-line-api/issues/2257
-                PostDownloadScript = context.CommandResult.GetValue(PostDownloadScript),
+                Verbose = context.CommandResult.GetValue(Verbose),
+                PostDownload = context.CommandResult.GetValue(PostDownload),
             });
         });
 

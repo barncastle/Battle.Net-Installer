@@ -55,14 +55,9 @@ internal static class Program
         // send close signal
         await app.AgentEndpoint.Delete();
 
-        // run the post download script if applicable
-        RunPostDownloadScript(options, complete);
-    }
-
-    private static void RunPostDownloadScript(Options options, bool complete)
-    {
-        if (complete && File.Exists(options.PostDownloadScript))
-            Process.Start(options.PostDownloadScript);
+        // run the post download app/script if applicable
+        if (complete && File.Exists(options.PostDownload))
+            Process.Start(options.PostDownload);
     }
 }
 

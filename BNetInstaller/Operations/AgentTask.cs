@@ -19,7 +19,7 @@ internal abstract class AgentTask<T>(Options options)
         var locale = _options.Locale.ToString();
         var cursor = (Left: 0, Top: 0);
 
-        if (_options.ConsoleEnvironment)
+        if (_options.Verbose)
             cursor = Console.GetCursorPosition();
 
         static void Print(string label, object value) =>
@@ -44,7 +44,7 @@ internal abstract class AgentTask<T>(Options options)
 
             // some non-console environments don't support
             // cursor positioning or line rewriting
-            if (_options.ConsoleEnvironment)
+            if (_options.Verbose)
             {
                 Console.SetCursorPosition(cursor.Left, cursor.Top);
                 Print("Downloading:", _options.Product);
