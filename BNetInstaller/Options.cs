@@ -1,29 +1,16 @@
-﻿using System.Text.RegularExpressions;
-using CommandLine;
+﻿using System.CommandLine;
+using System.Text.RegularExpressions;
 
 namespace BNetInstaller;
 
 internal sealed partial class Options
 {
-    [Option("prod", Required = true, HelpText = "TACT Product")]
     public string Product { get; set; }
-
-    [Option("lang", Required = true, HelpText = "Game/Asset Language")]
     public Locale Locale { get; set; }
-
-    [Option("dir", Required = true, HelpText = "Installation Directory")]
     public string Directory { get; set; }
-
-    [Option("uid", HelpText = "Agent Product UID (Required if different to the TACT product)")]
     public string UID { get; set; }
-
-    [Option("repair", HelpText = "Repair Product Installation")]
     public bool Repair { get; set; }
-
-    [Option("console-env", Hidden = true)]
-    public bool ConsoleEnvironment { get; set; } = true;
-
-    [Option("post-download-script", Hidden = true)]
+    public bool ConsoleEnvironment { get; set; }
     public string PostDownloadScript { get; set; }
 
     public void Sanitise()
@@ -34,14 +21,59 @@ internal sealed partial class Options
 
         // remove _locale suffix for wiki copy-pasters
         if (UID.Contains("_locale", StringComparison.OrdinalIgnoreCase))
-            UID = LocaleSuffixRegex().Replace(UID, $"_{Locale}");
+            UID = ExtractLocaleRegex().Replace(UID, $"_{Locale}");
 
         Product = Product.ToLowerInvariant().Trim();
         UID = UID.ToLowerInvariant().Trim();
-        Directory = Directory.Replace("/", "\\").Trim().TrimEnd('\\') + '\\';
+        Directory = Path.GetFullPath(Directory + "\\");
     }
 
-    public static string[] Create()
+    [GeneratedRegex("\\(?_locale\\)?", RegexOptions.IgnoreCase)]
+    private static partial Regex ExtractLocaleRegex();
+}
+
+internal static class OptionsBinder
+{
+    private static readonly Option<string> Product = new("--prod")
+    {
+        HelpName = "TACT Product",
+        Required = true
+    };
+
+    private static readonly Option<Locale> Locale = new("--lang")
+    {
+        HelpName = "Game/Asset language",
+        Required = true
+    };
+
+    private static readonly Option<string> Directory = new("--dir")
+    {
+        HelpName = "Installation Directory",
+        Required = true
+    };
+
+    private static readonly Option<string> UID = new("--uid")
+    {
+        HelpName = "Agent Product UID (Required if different to the TACT product)",
+        Required = true
+    };
+
+    private static readonly Option<bool> Repair = new("--repair")
+    {
+        HelpName = "Run installation repair"
+    };
+
+    private static readonly Option<bool?> ConsoleEnvironment = new("--console-env")
+    {
+        Hidden = true
+    };
+
+    private static readonly Option<string> PostDownloadScript = new("--post-download-script")
+    {
+        Hidden = true
+    };
+
+    public static string[] CreateArgs()
     {
         static string GetInput(string message)
         {
@@ -73,12 +105,41 @@ internal sealed partial class Options
         return args;
     }
 
-    [GeneratedRegex("\\(?_locale\\)?", RegexOptions.IgnoreCase, "en-GB")]
-    private static partial Regex LocaleSuffixRegex();
+    public static RootCommand BuildRootCommand(Func<Options, Task> task)
+    {
+        var rootCommand = new RootCommand()
+        {
+            Product,
+            Locale,
+            Directory,
+            UID,
+            Repair
+        };
+
+        rootCommand.SetAction(async context =>
+        {
+            await task(new()
+            {
+                Product = context.CommandResult.GetValue(Product),
+                Locale = context.CommandResult.GetValue(Locale),
+                Directory = context.CommandResult.GetValue(Directory),
+                UID = context.CommandResult.GetValue(UID),
+                Repair = context.CommandResult.GetValue(Repair),
+                ConsoleEnvironment = context.CommandResult.GetValue(ConsoleEnvironment) ?? true, // https://github.com/dotnet/command-line-api/issues/2257
+                PostDownloadScript = context.CommandResult.GetValue(PostDownloadScript),
+            });
+        });
+
+        rootCommand.TreatUnmatchedTokensAsErrors = false;
+
+        return rootCommand;
+    }
 }
 
 internal enum Locale
 {
+    arSA,
+    enSA,
     deDE,
     enUS,
     esMX,

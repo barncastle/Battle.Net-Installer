@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using BNetInstaller.Operations;
-using CommandLine;
 
 namespace BNetInstaller;
 
@@ -9,18 +8,12 @@ internal static class Program
     private static async Task Main(string[] args)
     {
         if (args is not { Length: > 0 })
-            args = Options.Create();
+            args = OptionsBinder.CreateArgs();
 
-        using Parser parser = new(s =>
-        {
-            s.HelpWriter = Console.Error;
-            s.CaseInsensitiveEnumValues = true;
-            s.AutoVersion = false;
-        });
-
-        await parser
-            .ParseArguments<Options>(args)
-            .MapResult(Run, Task.FromResult);
+        await OptionsBinder
+            .BuildRootCommand(Run)
+            .Parse(args)
+            .InvokeAsync();
     }
 
     private static async Task Run(Options options)
