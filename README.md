@@ -5,7 +5,7 @@ A tool for installing, updating and repairing games via Blizzard's Battle.net ap
 Windows only. See [releases](https://github.com/barncastle/Battle.Net-Installer/releases) for a compiled binary.
 
 #### Project Prerequisites
-- [.NET 6.0](https://dotnet.microsoft.com/download/dotnet)
+- [.NET 8.0](https://dotnet.microsoft.com/download/dotnet)
 - [Battle.net](https://www.blizzard.com/en-us/apps/battle.net/desktop) must be installed, up to date and have been recently signed in to.
 
 #### Arguments
@@ -16,6 +16,8 @@ Windows only. See [releases](https://github.com/barncastle/Battle.Net-Installer/
 | --dir | Installation Directory **(Required)** |
 | --uid | Agent UID (Required if different to the TACT Product) |
 | --repair | Repairs the installation opposed to installing/updating it |
+| --verbose | Enables/disables verbose progress reporting |
+| --post-download | Specifies a file or app to run on completion |
 | --help | Shows this table |
 
 - All TACT Products and Agent UIDs can be found [here](https://wowdev.wiki/TACT#Products) however only (green) Active products will work.  
