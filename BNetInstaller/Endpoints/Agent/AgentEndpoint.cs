@@ -1,35 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
-using BNetInstaller.Constants;
-using Newtonsoft.Json.Linq;
+﻿namespace BNetInstaller.Endpoints.Agent;
 
-namespace BNetInstaller.Endpoints.Agent;
-
-internal class AgentEndpoint : BaseEndpoint
+internal sealed class AgentEndpoint(AgentClient client) : BaseEndpoint<NullModel>("agent", client)
 {
-    public AgentEndpoint(Requester requester) : base("agent", requester)
+    protected override void ValidateResponse(JsonNode response, string content)
     {
-    }
+        base.ValidateResponse(response, content);
 
-    public async Task Delete()
-    {
-        await Requester.SendAsync(Endpoint, HttpVerb.DELETE);
-    }
-
-    public async Task<JToken> Get()
-    {
-        using var response = await Requester.SendAsync(Endpoint, HttpVerb.GET);
-        return await Deserialize(response);
-    }
-
-    protected override void ValidateResponse(JToken response, string content)
-    {
-        var token = response.Value<string>("authorization");
+        var token = response["authorization"]?.GetValue<string>();
 
         if (string.IsNullOrEmpty(token))
             throw new Exception("Agent Error: Unable to authenticate.", new(content));
 
-        Requester.SetAuthorization(token);
-        base.ValidateResponse(response, content);
+        Client.SetAuthToken(token);
     }
 }

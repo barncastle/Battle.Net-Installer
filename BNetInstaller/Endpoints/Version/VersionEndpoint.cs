@@ -1,28 +1,10 @@
-﻿using System.Threading.Tasks;
-using BNetInstaller.Constants;
-using BNetInstaller.Models;
-using Newtonsoft.Json.Linq;
+﻿namespace BNetInstaller.Endpoints.Version;
 
-namespace BNetInstaller.Endpoints.Version;
-
-internal class VersionEndpoint : BaseEndpoint
+internal sealed class VersionEndpoint(AgentClient client) : BaseEndpoint<UidModel>("version", client)
 {
-    public UidModel Model { get; }
-
-    public VersionEndpoint(Requester requester) : base("version", requester)
+    public override async Task<JsonNode> Get()
     {
-        Model = new();
-    }
-
-    public async Task<JToken> Get()
-    {
-        using var response = await Requester.SendAsync(Endpoint + "/" + Model.Uid, HttpVerb.GET);
-        return await Deserialize(response);
-    }
-
-    public async Task<JToken> Post()
-    {
-        using var response = await Requester.SendAsync(Endpoint, HttpVerb.POST, Model);
+        using var response = await Client.SendAsync(Endpoint + "/" + Model.Uid, HttpMethod.Get);
         return await Deserialize(response);
     }
 }

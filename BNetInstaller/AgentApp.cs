@@ -1,9 +1,6 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using BNetInstaller.Endpoints.Agent;
-using BNetInstaller.Endpoints.Game;
 using BNetInstaller.Endpoints.Install;
 using BNetInstaller.Endpoints.Repair;
 using BNetInstaller.Endpoints.Update;
@@ -11,42 +8,42 @@ using BNetInstaller.Endpoints.Version;
 
 namespace BNetInstaller;
 
-internal class AgentApp : IDisposable
+internal sealed class AgentApp : IDisposable
 {
     public readonly AgentEndpoint AgentEndpoint;
     public readonly InstallEndpoint InstallEndpoint;
     public readonly UpdateEndpoint UpdateEndpoint;
     public readonly RepairEndpoint RepairEndpoint;
-    public readonly GameEndpoint GameEndpoint;
     public readonly VersionEndpoint VersionEndpoint;
 
-    private readonly string AgentPath;
-    private readonly int Port = 5050;
-
-    private Process Process;
-    private Requester Requester;
+    private readonly Process _process;
+    private readonly int _port;
+    private readonly AgentClient _client;
 
     public AgentApp()
     {
-        AgentPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Battle.net", "Agent", "Agent.exe");
-
-        if (!StartProcess())
+        if (!StartProcess(out _process, out _port))
         {
-            Console.WriteLine("Please ensure Battle.net is installed and has recently been opened.");
+            Console.WriteLine("Please ensure Battle.net is installed and has recently been signed in to.");
             Environment.Exit(0);
         }
 
-        AgentEndpoint = new(Requester);
-        InstallEndpoint = new(Requester);
-        UpdateEndpoint = new(Requester);
-        RepairEndpoint = new(Requester);
-        GameEndpoint = new(Requester);
-        VersionEndpoint = new(Requester);
+        _client = new(_port);
+
+        AgentEndpoint = new(_client);
+        InstallEndpoint = new(_client);
+        UpdateEndpoint = new(_client);
+        RepairEndpoint = new(_client);
+        VersionEndpoint = new(_client);
     }
 
-    private bool StartProcess()
+    private static bool StartProcess(out Process process, out int port)
     {
-        if (!File.Exists(AgentPath))
+        (process, port) = (null, -1);
+
+        var agentPath = GetAgentPath();
+
+        if (!File.Exists(agentPath))
         {
             Console.WriteLine("Unable to find Agent.exe.");
             return false;
@@ -54,8 +51,25 @@ internal class AgentApp : IDisposable
 
         try
         {
-            Process = Process.Start(AgentPath, $"--port={Port}");
-            Requester = new Requester(Port);
+            process = Process.Start(new ProcessStartInfo(agentPath)
+            {
+                Arguments = "--internalclienttools",
+                UseShellExecute = true,
+            });
+
+            // detect listening port
+            while (process is { HasExited: false } && port == -1)
+            {
+                Thread.Sleep(250);
+                port = NativeMethods.GetProcessListeningPort(process.Id);
+            }
+
+            if (process is not { HasExited: false } || port == -1)
+            {
+                Console.WriteLine("Unable to connect to Agent.exe.");
+                return false;
+            }
+
             return true;
         }
         catch (Win32Exception)
@@ -65,12 +79,26 @@ internal class AgentApp : IDisposable
         }
     }
 
+    private static string GetAgentPath()
+    {
+        var agentDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Battle.net", "Agent");
+        var parentPath = Path.Combine(agentDirectory, "Agent.exe");
+        var parentVersion = 0;
+
+        // read parent Agent.exe version
+        if (File.Exists(parentPath))
+            parentVersion = FileVersionInfo.GetVersionInfo(parentPath).ProductPrivatePart;
+
+        // return expected child Agent path
+        return Path.Combine(agentDirectory, $"Agent.{parentVersion}", "Agent.exe");
+    }
+
     public void Dispose()
     {
-        if (Process?.HasExited == false)
-            Process.Kill();
+        if (_process?.HasExited == false)
+            _process.Kill();
 
-        Requester?.Dispose();
-        Process?.Dispose();
+        _client?.Dispose();
+        _process?.Dispose();
     }
 }

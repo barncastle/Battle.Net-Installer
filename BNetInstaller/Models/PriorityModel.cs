@@ -1,6 +1,6 @@
 ﻿namespace BNetInstaller.Models;
 
-internal class PriorityModel
+internal sealed class PriorityModel : IModel
 {
     public bool InsertAtHead { get; set; } = true;
     public double Value { get; set; } = 900;
