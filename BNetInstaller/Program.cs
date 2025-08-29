@@ -28,16 +28,12 @@ internal static class Program
         await app.AgentEndpoint.Get();
 
         Console.WriteLine($"Queuing {mode}");
-        app.InstallEndpoint.Model.InstructionsDataset = ["torrent", "win", options.Product, locale.ToLowerInvariant()];
         app.InstallEndpoint.Model.InstructionsPatchUrl = $"http://us.patch.battle.net:1119/{options.Product}";
         app.InstallEndpoint.Model.Uid = options.UID;
         await app.InstallEndpoint.Post();
 
         Console.WriteLine($"Starting {mode}");
         app.InstallEndpoint.Product.Model.GameDir = options.Directory;
-        app.InstallEndpoint.Product.Model.Language[0] = locale;
-        app.InstallEndpoint.Product.Model.SelectedAssetLocale = locale;
-        app.InstallEndpoint.Product.Model.SelectedLocale = locale;
         await app.InstallEndpoint.Product.Post();
 
         Console.WriteLine();
